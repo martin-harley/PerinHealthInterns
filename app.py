@@ -50,6 +50,68 @@ def create_app(test_config=None):
     def index():
         return render_template("index.html")
 
+    def run_sandbox_sql(sql):
+        cleaned_sql = sql.strip()
+        if not cleaned_sql:
+            return {
+                "error": "Type or build a SQL statement before running it.",
+                "sql": sql,
+                "columns": [],
+                "rows": [],
+                "message": None,
+            }
+
+        db = get_db()
+        try:
+            cursor = db.execute(cleaned_sql)
+            if cursor.description:
+                columns = [column[0] for column in cursor.description]
+                rows = [dict(row) for row in cursor.fetchall()]
+                return {
+                    "error": None,
+                    "sql": cleaned_sql,
+                    "columns": columns,
+                    "rows": rows,
+                    "message": f"Query returned {len(rows)} row(s).",
+                }
+
+            db.commit()
+            return {
+                "error": None,
+                "sql": cleaned_sql,
+                "columns": [],
+                "rows": [],
+                "message": f"Query executed successfully. Rows changed: {cursor.rowcount}.",
+            }
+        except sqlite3.Error as error:
+            db.rollback()
+            return {
+                "error": str(error),
+                "sql": cleaned_sql,
+                "columns": [],
+                "rows": [],
+                "message": None,
+            }
+
+    @app.route("/sandbox")
+    def sandbox():
+        return render_template("sandbox.html")
+
+    @app.post("/sandbox/run")
+    def sandbox_run():
+        sql = request.form.get("sql", "")
+        mode = request.form.get("mode", "typed")
+        result = run_sandbox_sql(sql)
+        return render_template("sandbox.html", result=result, active_mode=mode)
+
+    @app.post("/sandbox/reset")
+    def sandbox_reset():
+        init_db()
+        return render_template(
+            "sandbox.html",
+            reset_message="Sandbox reset to the seed training data.",
+        )
+
     @app.route("/patients")
     def patients_list():
         patients = get_db().execute(

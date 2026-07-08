@@ -49,3 +49,9 @@ Appointments connect patients and doctors:
 ## Phase 5: Write SQL Directly
 
 After using the app, open `exercises.sql` and run the queries against the SQLite database.
+
+## SQL Sandbox
+
+Use the Sandbox tab to practice SQL inside the web app. The drag builder helps assemble starter statements, and the typed editor lets you write SQL directly.
+
+Sandbox queries run against the same fictional SQLite database used by the app. Use **Reset training database** to restore the original seed data after experiments.

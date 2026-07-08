@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% from "_sql_help.html" import sql_help %}
+
+{% block title %}SQL Sandbox{% endblock %}
+
+{% block content %}
+  <section class="home-hero sandbox-hero">
+    <div>
+      <p class="eyebrow">Live database practice</p>
+      <h2>SQL Sandbox</h2>
+      <p>
+        Build SQL by dragging statement pieces, or type a query yourself.
+        This sandbox runs against the app's actual SQLite training database.
+      </p>
+      <p class="safety-note">Changes here affect the same fictional patients, doctors, appointments, and notes used by the app.</p>
+    </div>
+  </section>
+
+  {% if reset_message %}
+    <section class="success-panel">{{ reset_message }}</section>
+  {% endif %}
+
+  <section class="sql-panel">SQL concept: statements run directly against the app database. Use reset when you want the original seed data back.</section>
+  {{ sql_help(
+    "Try SELECT first to inspect data, then experiment with INSERT, UPDATE, and DELETE. If you break the training data, reset restores schema.sql and seed.sql.",
+    [
+      "SELECT id, first_name, last_name FROM patients;",
+      "INSERT INTO patients (first_name, last_name, date_of_birth, phone)\nVALUES ('Riley', 'Sandbox', '1999-09-09', '555-0200');",
+      "UPDATE appointments\nSET status = 'completed'\nWHERE id = 1;",
+      "DELETE FROM appointment_notes\nWHERE id = 1;"
+    ]
+  ) }}
+
+  <section class="sandbox-tabs">
+    <input type="radio" name="sandbox-tab" id="tab-builder" {% if active_mode != "typed" %}checked{% endif %}>
+    <input type="radio" name="sandbox-tab" id="tab-typed" {% if active_mode == "typed" %}checked{% endif %}>
+
+    <div class="tab-list" aria-label="SQL sandbox modes">
+      <label for="tab-builder">Drag builder</label>
+      <label for="tab-typed">Type SQL</label>
+    </div>
+
+    <div class="tab-panel builder-panel">
+      <div class="sandbox-layout">
+        <section class="block-palette" aria-label="Draggable SQL blocks">
+          <h3>Drag SQL pieces</h3>
+          <button class="sql-block" type="button" draggable="true" data-sql="SELECT id, first_name, last_name FROM patients;">SELECT patients</button>
+          <button class="sql-block" type="button" draggable="true" data-sql="SELECT appointments.id, patients.first_name || ' ' || patients.last_name AS patient_name, doctors.first_name || ' ' || doctors.last_name AS doctor_name, appointments.status FROM appointments JOIN patients ON appointments.patient_id = patients.id JOIN doctors ON appointments.doctor_id = doctors.id;">JOIN appointments</button>
+          <button class="sql-block" type="button" draggable="true" data-sql="INSERT INTO patients (first_name, last_name, date_of_birth, phone) VALUES ('Riley', 'Sandbox', '1999-09-09', '555-0200');">INSERT patient</button>
+          <button class="sql-block" type="button" draggable="true" data-sql="UPDATE appointments SET status = 'completed' WHERE id = 1;">UPDATE appointment</button>
+          <button class="sql-block" type="button" draggable="true" data-sql="DELETE FROM appointment_notes WHERE id = 1;">DELETE note</button>
+        </section>
+
+        <form class="sandbox-editor" method="post" action="{{ url_for('sandbox_run') }}">
+          <input type="hidden" name="mode" value="builder">
+          <label>Drop blocks here
+            <textarea id="builder-sql" name="sql" rows="8" placeholder="Drag a SQL block here, then edit it before running.">{{ result.sql if result and active_mode == "builder" else "" }}</textarea>
+          </label>
+          <div class="sandbox-actions">
+            <button type="submit">Run built query</button>
+            <button type="button" class="button-secondary" data-clear-target="builder-sql">Clear</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="tab-panel typed-panel">
+      <form class="sandbox-editor" method="post" action="{{ url_for('sandbox_run') }}">
+        <input type="hidden" name="mode" value="typed">
+        <label>Type SQL
+          <textarea name="sql" rows="10" placeholder="SELECT * FROM patients;">{{ result.sql if result and active_mode == "typed" else "" }}</textarea>
+        </label>
+        <div class="sandbox-actions">
+          <button type="submit">Run typed query</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <form class="reset-form" method="post" action="{{ url_for('sandbox_reset') }}" onsubmit="return confirm('Reset the database back to the seed training data?');">
+    <button type="submit">Reset training database</button>
+  </form>
+
+  {% if result %}
+    <section class="query-result">
+      <h3>Result</h3>
+      {% if result.error %}
+        <p class="error-panel">{{ result.error }}</p>
+      {% else %}
+        <p class="success-panel">{{ result.message }}</p>
+        {% if result.columns %}
+          <table>
+            <tr>
+              {% for column in result.columns %}
+                <th>{{ column }}</th>
+              {% endfor %}
+            </tr>
+            {% for row in result.rows %}
+              <tr>
+                {% for column in result.columns %}
+                  <td>{{ row[column] }}</td>
+                {% endfor %}
+              </tr>
+            {% endfor %}
+          </table>
+        {% endif %}
+      {% endif %}
+    </section>
+  {% endif %}
+
+  <script src="{{ url_for('static', filename='sandbox.js') }}"></script>
+{% endblock %}

@@ -21,6 +21,7 @@ def test_home_page_loads():
 
     assert response.status_code == 200
     assert b"Perin Health Appointment Tracker" in response.data
+    assert b"Sandbox" in response.data
 
 
 def test_home_page_guides_beginner_workflow():
@@ -223,6 +224,71 @@ def test_appointment_detail_and_notes_crud(client_with_db, app_with_db):
     assert b"Fictional note for teaching CRUD." not in response.data
 
 
+def test_sandbox_page_has_builder_and_typed_tabs(client_with_db):
+    response = client_with_db.get("/sandbox")
+
+    assert response.status_code == 200
+    assert b"SQL Sandbox" in response.data
+    assert b"Drag builder" in response.data
+    assert b"Type SQL" in response.data
+    assert b"draggable=\"true\"" in response.data
+
+
+def test_sandbox_typed_select_returns_rows(client_with_db):
+    response = client_with_db.post(
+        "/sandbox/run",
+        data={"sql": "SELECT first_name, last_name FROM patients ORDER BY id;"},
+    )
+
+    assert response.status_code == 200
+    assert b"Ava" in response.data
+    assert b"Morgan" in response.data
+
+
+def test_sandbox_builder_insert_executes_against_app_database(client_with_db, app_with_db):
+    response = client_with_db.post(
+        "/sandbox/run",
+        data={
+            "sql": "INSERT INTO patients (first_name, last_name, date_of_birth, phone) VALUES ('Riley', 'Sandbox', '1999-09-09', '555-0200');",
+            "mode": "builder",
+        },
+    )
+
+    assert response.status_code == 200
+    assert b"Query executed successfully" in response.data
+    with app_with_db.app_context():
+        row = get_db().execute(
+            "SELECT first_name, last_name FROM patients WHERE last_name = 'Sandbox'"
+        ).fetchone()
+    assert dict(row) == {"first_name": "Riley", "last_name": "Sandbox"}
+
+
+def test_sandbox_reset_restores_seed_data(client_with_db, app_with_db):
+    client_with_db.post(
+        "/sandbox/run",
+        data={
+            "sql": "DELETE FROM patients WHERE first_name = 'Ava';",
+            "mode": "typed",
+        },
+    )
+
+    with app_with_db.app_context():
+        missing = get_db().execute(
+            "SELECT id FROM patients WHERE first_name = 'Ava'"
+        ).fetchone()
+    assert missing is None
+
+    response = client_with_db.post("/sandbox/reset", follow_redirects=True)
+
+    assert response.status_code == 200
+    assert b"Sandbox reset to the seed training data" in response.data
+    with app_with_db.app_context():
+        restored = get_db().execute(
+            "SELECT id FROM patients WHERE first_name = 'Ava'"
+        ).fetchone()
+    assert restored is not None
+
+
 @pytest.mark.parametrize(
     ("path", "sql_terms"),
     [
@@ -237,6 +303,7 @@ def test_appointment_detail_and_notes_crud(client_with_db, app_with_db):
         ("/appointments/new", [b"Show SQL and tips", b"INSERT INTO appointments"]),
         ("/appointments/1/edit", [b"Show SQL and tips", b"UPDATE appointments"]),
         ("/appointments/1", [b"Show SQL and tips", b"appointment_notes", b"INSERT INTO appointment_notes"]),
+        ("/sandbox", [b"Show SQL and tips", b"SELECT", b"INSERT", b"UPDATE", b"DELETE"]),
     ],
 )
 def test_pages_show_sql_and_tips(client_with_db, path, sql_terms):

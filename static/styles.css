@@ -234,3 +234,119 @@ button,
   margin-top: 1rem;
   padding-top: 1rem;
 }
+
+.success-panel,
+.error-panel {
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+}
+
+.success-panel {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+}
+
+.error-panel {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+
+.sandbox-tabs {
+  background: white;
+  border: 1px solid #d9e2ec;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  padding: 1rem;
+}
+
+.sandbox-tabs > input {
+  position: absolute;
+  opacity: 0;
+}
+
+.tab-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tab-list label {
+  border: 1px solid #d9e2ec;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-block;
+  margin: 0;
+  padding: 0.5rem 0.85rem;
+}
+
+#tab-builder:checked ~ .tab-list label[for="tab-builder"],
+#tab-typed:checked ~ .tab-list label[for="tab-typed"] {
+  background: #0f766e;
+  border-color: #0f766e;
+  color: white;
+}
+
+.tab-panel {
+  display: none;
+}
+
+#tab-builder:checked ~ .builder-panel,
+#tab-typed:checked ~ .typed-panel {
+  display: block;
+}
+
+.sandbox-layout {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(220px, 0.7fr) minmax(280px, 1.3fr);
+}
+
+.block-palette,
+.sandbox-editor,
+.query-result {
+  background: #f8fafc;
+  border: 1px solid #d9e2ec;
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.block-palette h3,
+.query-result h3 {
+  margin-top: 0;
+}
+
+.sql-block {
+  background: white;
+  border: 1px solid #cbd5e1;
+  color: #1f2933;
+  cursor: grab;
+  display: block;
+  margin-bottom: 0.6rem;
+  text-align: left;
+  width: 100%;
+}
+
+.sandbox-actions,
+.reset-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.reset-form {
+  margin-bottom: 1rem;
+}
+
+.query-result {
+  overflow-x: auto;
+}
+
+@media (max-width: 760px) {
+  .sandbox-layout {
+    grid-template-columns: 1fr;
+  }
+}
