@@ -8,10 +8,10 @@ Do not enter real patient information into this app.
 
 ```bash
 python -m venv .venv
-.venv\Scripts\activate
+.\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-flask --app app init-db
-flask --app app run
+python -m flask --app app init-db
+python -m flask --app app run
 ```
 
 Open the local URL printed by Flask.
