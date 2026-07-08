@@ -1,5 +1,6 @@
 import os
 import tempfile
+from pathlib import Path
 
 import pytest
 
@@ -207,3 +208,21 @@ def test_appointment_detail_and_notes_crud(client_with_db, app_with_db):
 
     response = client_with_db.post(f"/notes/{note['id']}/delete", follow_redirects=True)
     assert b"Fictional note for teaching CRUD." not in response.data
+
+
+def test_readme_explains_learning_sequence():
+    text = Path("README.md").read_text(encoding="utf-8")
+
+    assert "Phase 1: Use the Web App" in text
+    assert "Phase 5: Write SQL Directly" in text
+    assert "fictional training data" in text
+
+
+def test_exercises_cover_core_sql_operations():
+    text = Path("exercises.sql").read_text(encoding="utf-8").upper()
+
+    assert "SELECT" in text
+    assert "INSERT" in text
+    assert "UPDATE" in text
+    assert "DELETE" in text
+    assert "JOIN" in text
