@@ -1,9 +1,19 @@
 {% extends "base.html" %}
+{% from "_sql_help.html" import sql_help %}
 
 {% block title %}Appointment detail{% endblock %}
 
 {% block content %}
   <section class="sql-panel">SQL concept: SELECT with JOIN reads one appointment and its related patient, doctor, and notes.</section>
+  {{ sql_help(
+    "This page reads one appointment, reads its appointment_notes, and lets you add or delete notes connected by appointment_id.",
+    [
+      "SELECT appointments.id, appointments.appointment_date, appointments.appointment_time,\n       appointments.reason, appointments.status,\n       patients.first_name || ' ' || patients.last_name AS patient_name,\n       doctors.first_name || ' ' || doctors.last_name AS doctor_name\nFROM appointments\nJOIN patients ON appointments.patient_id = patients.id\nJOIN doctors ON appointments.doctor_id = doctors.id\nWHERE appointments.id = ?;",
+      "SELECT id, note_text, created_at\nFROM appointment_notes\nWHERE appointment_id = ?\nORDER BY created_at DESC, id DESC;",
+      "INSERT INTO appointment_notes (appointment_id, note_text)\nVALUES (?, ?);",
+      "DELETE FROM appointment_notes\nWHERE id = ?;"
+    ]
+  ) }}
 
   <section class="panel">
     <h2>{{ appointment.reason }}</h2>

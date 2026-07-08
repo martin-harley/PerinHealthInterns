@@ -1,9 +1,19 @@
 {% extends "base.html" %}
+{% from "_sql_help.html" import sql_help %}
 
 {% block title %}Patients{% endblock %}
 
 {% block content %}
   <section class="sql-panel">SQL concept: SELECT reads rows from the patients table.</section>
+  {{ sql_help(
+    "This page reads patients with SELECT. The Add, Edit, and Delete buttons take you to actions that use INSERT, UPDATE, and DELETE.",
+    [
+      "SELECT id, first_name, last_name, date_of_birth, phone\nFROM patients\nORDER BY last_name, first_name;",
+      "INSERT INTO patients (first_name, last_name, date_of_birth, phone)\nVALUES (?, ?, ?, ?);",
+      "UPDATE patients\nSET first_name = ?, last_name = ?, date_of_birth = ?, phone = ?\nWHERE id = ?;",
+      "DELETE FROM patients\nWHERE id = ?;"
+    ]
+  ) }}
   <p><a class="button" href="{{ url_for('patient_new') }}">Add patient</a></p>
   <table>
     <tr><th>Name</th><th>Date of birth</th><th>Phone</th><th>Actions</th></tr>

@@ -1,9 +1,25 @@
 {% extends "base.html" %}
+{% from "_sql_help.html" import sql_help %}
 
 {% block title %}{% if patient %}Edit patient{% else %}Add patient{% endif %}{% endblock %}
 
 {% block content %}
   <section class="sql-panel">SQL concept: {% if patient %}UPDATE changes an existing patient row.{% else %}INSERT creates a new patient row.{% endif %}</section>
+  {% if patient %}
+    {{ sql_help(
+      "Saving this form updates one existing patient. The WHERE id = ? part tells SQLite which row to change.",
+      [
+        "UPDATE patients\nSET first_name = ?, last_name = ?, date_of_birth = ?, phone = ?\nWHERE id = ?;"
+      ]
+    ) }}
+  {% else %}
+    {{ sql_help(
+      "Saving this form inserts one new patient row. SQLite creates the id automatically.",
+      [
+        "INSERT INTO patients (first_name, last_name, date_of_birth, phone)\nVALUES (?, ?, ?, ?);"
+      ]
+    ) }}
+  {% endif %}
   <form method="post">
     <label>First name <input name="first_name" value="{{ patient.first_name if patient else '' }}" required></label>
     <label>Last name <input name="last_name" value="{{ patient.last_name if patient else '' }}" required></label>

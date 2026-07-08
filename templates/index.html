@@ -1,9 +1,53 @@
 {% extends "base.html" %}
+{% from "_sql_help.html" import sql_help %}
 
 {% block content %}
-  <section class="panel">
-    <h2>Training Database</h2>
-    <p>This app uses fictional training data to teach create, read, update, and delete operations.</p>
-    <p>Start by using the web app, then open the README and exercises.sql files to learn the SQL underneath.</p>
+  <section class="home-hero">
+    <div>
+      <p class="eyebrow">Fictional training database</p>
+      <h2>Start with the app, then learn the SQL underneath.</h2>
+      <p>
+        Practice creating, reading, updating, and deleting records in a simple appointment tracker.
+        Every page includes a SQL guide so interns can connect each button to the database action behind it.
+      </p>
+      <p class="safety-note">Do not enter real patient information. This project is only for fictional training data.</p>
+    </div>
   </section>
+
+  <section class="dashboard-grid" aria-label="Main sections">
+    <a class="dashboard-card" href="{{ url_for('patients_list') }}">
+      <span>1</span>
+      <strong>Patients</strong>
+      <small>Create fictional patient records and edit basic details.</small>
+    </a>
+    <a class="dashboard-card" href="{{ url_for('doctors_list') }}">
+      <span>2</span>
+      <strong>Doctors</strong>
+      <small>Add doctors so appointments can connect to them.</small>
+    </a>
+    <a class="dashboard-card" href="{{ url_for('appointments_list') }}">
+      <span>3</span>
+      <strong>Appointments</strong>
+      <small>Schedule visits, update status, and open notes.</small>
+    </a>
+  </section>
+
+  <section class="learning-path">
+    <h2>Learning path</h2>
+    <ol>
+      <li><strong>Use the web app.</strong> Click through records before reading code.</li>
+      <li><strong>Understand tables.</strong> Learn how patients, doctors, appointments, and notes are stored.</li>
+      <li><strong>Connect buttons to CRUD.</strong> Match every action to INSERT, SELECT, UPDATE, or DELETE.</li>
+      <li><strong>Write SQL directly.</strong> Use exercises.sql when the workflow feels familiar.</li>
+    </ol>
+  </section>
+
+  {{ sql_help(
+    "The home page does not change data. It links to pages that run SELECT queries to read fictional records from the database.",
+    [
+      "SELECT id, first_name, last_name, date_of_birth, phone\nFROM patients\nORDER BY last_name, first_name;",
+      "SELECT id, first_name, last_name, specialty\nFROM doctors\nORDER BY last_name, first_name;",
+      "SELECT appointments.*, patients.first_name, doctors.first_name\nFROM appointments\nJOIN patients ON appointments.patient_id = patients.id\nJOIN doctors ON appointments.doctor_id = doctors.id;"
+    ]
+  ) }}
 {% endblock %}

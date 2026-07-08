@@ -1,9 +1,25 @@
 {% extends "base.html" %}
+{% from "_sql_help.html" import sql_help %}
 
 {% block title %}{% if doctor %}Edit doctor{% else %}Add doctor{% endif %}{% endblock %}
 
 {% block content %}
   <section class="sql-panel">SQL concept: {% if doctor %}UPDATE changes an existing doctor row.{% else %}INSERT creates a new doctor row.{% endif %}</section>
+  {% if doctor %}
+    {{ sql_help(
+      "Saving this form updates one existing doctor. The id in the URL becomes the WHERE id = ? value.",
+      [
+        "UPDATE doctors\nSET first_name = ?, last_name = ?, specialty = ?\nWHERE id = ?;"
+      ]
+    ) }}
+  {% else %}
+    {{ sql_help(
+      "Saving this form inserts a new doctor row. Each doctor can later be connected to appointments.",
+      [
+        "INSERT INTO doctors (first_name, last_name, specialty)\nVALUES (?, ?, ?);"
+      ]
+    ) }}
+  {% endif %}
   <form method="post">
     <label>First name <input name="first_name" value="{{ doctor.first_name if doctor else '' }}" required></label>
     <label>Last name <input name="last_name" value="{{ doctor.last_name if doctor else '' }}" required></label>

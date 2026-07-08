@@ -1,9 +1,25 @@
 {% extends "base.html" %}
+{% from "_sql_help.html" import sql_help %}
 
 {% block title %}{% if appointment %}Edit appointment{% else %}Add appointment{% endif %}{% endblock %}
 
 {% block content %}
   <section class="sql-panel">SQL concept: {% if appointment %}UPDATE changes an existing appointment row.{% else %}INSERT creates a new appointment row with patient_id and doctor_id foreign keys.{% endif %}</section>
+  {% if appointment %}
+    {{ sql_help(
+      "Saving this form updates an appointment. patient_id and doctor_id keep the relationship to the selected patient and doctor.",
+      [
+        "UPDATE appointments\nSET patient_id = ?, doctor_id = ?, appointment_date = ?, appointment_time = ?, reason = ?, status = ?\nWHERE id = ?;"
+      ]
+    ) }}
+  {% else %}
+    {{ sql_help(
+      "Saving this form inserts one appointment. The selected patient and doctor are stored as foreign key ids.",
+      [
+        "INSERT INTO appointments (patient_id, doctor_id, appointment_date, appointment_time, reason, status)\nVALUES (?, ?, ?, ?, ?, ?);"
+      ]
+    ) }}
+  {% endif %}
   <form method="post">
     <label>Patient
       <select name="patient_id" required>

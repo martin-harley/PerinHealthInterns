@@ -1,0 +1,11 @@
+{% macro sql_help(tip, statements) %}
+  <details class="sql-help">
+    <summary>Show SQL and tips</summary>
+    <div class="sql-help-body">
+      <p>{{ tip }}</p>
+      {% for statement in statements %}
+        <pre><code>{{ statement }}</code></pre>
+      {% endfor %}
+    </div>
+  </details>
+{% endmacro %}

@@ -23,6 +23,19 @@ def test_home_page_loads():
     assert b"Perin Health Appointment Tracker" in response.data
 
 
+def test_home_page_guides_beginner_workflow():
+    app = create_app({"TESTING": True, "DATABASE": ":memory:"})
+    client = app.test_client()
+
+    response = client.get("/")
+
+    assert b"Start with the app" in response.data
+    assert b"Patients" in response.data
+    assert b"Doctors" in response.data
+    assert b"Appointments" in response.data
+    assert b"Do not enter real patient information" in response.data
+
+
 def test_init_db_creates_required_tables():
     app = create_app({"TESTING": True, "DATABASE": ":memory:"})
 
@@ -208,6 +221,30 @@ def test_appointment_detail_and_notes_crud(client_with_db, app_with_db):
 
     response = client_with_db.post(f"/notes/{note['id']}/delete", follow_redirects=True)
     assert b"Fictional note for teaching CRUD." not in response.data
+
+
+@pytest.mark.parametrize(
+    ("path", "sql_terms"),
+    [
+        ("/", [b"Show SQL and tips", b"SELECT"]),
+        ("/patients", [b"Show SQL and tips", b"SELECT", b"INSERT", b"UPDATE", b"DELETE"]),
+        ("/patients/new", [b"Show SQL and tips", b"INSERT INTO patients"]),
+        ("/patients/1/edit", [b"Show SQL and tips", b"UPDATE patients"]),
+        ("/doctors", [b"Show SQL and tips", b"SELECT", b"INSERT", b"UPDATE", b"DELETE"]),
+        ("/doctors/new", [b"Show SQL and tips", b"INSERT INTO doctors"]),
+        ("/doctors/1/edit", [b"Show SQL and tips", b"UPDATE doctors"]),
+        ("/appointments", [b"Show SQL and tips", b"JOIN patients", b"JOIN doctors"]),
+        ("/appointments/new", [b"Show SQL and tips", b"INSERT INTO appointments"]),
+        ("/appointments/1/edit", [b"Show SQL and tips", b"UPDATE appointments"]),
+        ("/appointments/1", [b"Show SQL and tips", b"appointment_notes", b"INSERT INTO appointment_notes"]),
+    ],
+)
+def test_pages_show_sql_and_tips(client_with_db, path, sql_terms):
+    response = client_with_db.get(path)
+
+    assert response.status_code == 200
+    for term in sql_terms:
+        assert term in response.data
 
 
 def test_readme_explains_learning_sequence():

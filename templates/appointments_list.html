@@ -1,9 +1,19 @@
 {% extends "base.html" %}
+{% from "_sql_help.html" import sql_help %}
 
 {% block title %}Appointments{% endblock %}
 
 {% block content %}
   <section class="sql-panel">SQL concept: SELECT with JOIN reads appointments with patient and doctor names.</section>
+  {{ sql_help(
+    "Appointments store patient_id and doctor_id. JOIN lets the page show readable names from the patients and doctors tables.",
+    [
+      "SELECT appointments.id, appointments.appointment_date, appointments.appointment_time,\n       appointments.reason, appointments.status,\n       patients.first_name || ' ' || patients.last_name AS patient_name,\n       doctors.first_name || ' ' || doctors.last_name AS doctor_name\nFROM appointments\nJOIN patients ON appointments.patient_id = patients.id\nJOIN doctors ON appointments.doctor_id = doctors.id\nORDER BY appointments.appointment_date, appointments.appointment_time;",
+      "INSERT INTO appointments (patient_id, doctor_id, appointment_date, appointment_time, reason, status)\nVALUES (?, ?, ?, ?, ?, ?);",
+      "UPDATE appointments\nSET patient_id = ?, doctor_id = ?, appointment_date = ?, appointment_time = ?, reason = ?, status = ?\nWHERE id = ?;",
+      "DELETE FROM appointments\nWHERE id = ?;"
+    ]
+  ) }}
   <p><a class="button" href="{{ url_for('appointment_new') }}">Add appointment</a></p>
   <table>
     <tr><th>Date</th><th>Time</th><th>Patient</th><th>Doctor</th><th>Reason</th><th>Status</th><th>Actions</th></tr>
