@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}{% if appointment %}Edit appointment{% else %}Add appointment{% endif %}{% endblock %}
+
+{% block content %}
+  <section class="sql-panel">SQL concept: {% if appointment %}UPDATE changes an existing appointment row.{% else %}INSERT creates a new appointment row with patient_id and doctor_id foreign keys.{% endif %}</section>
+  <form method="post">
+    <label>Patient
+      <select name="patient_id" required>
+        {% for patient in patients %}
+          <option value="{{ patient.id }}" {% if appointment and appointment.patient_id == patient.id %}selected{% endif %}>{{ patient.first_name }} {{ patient.last_name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Doctor
+      <select name="doctor_id" required>
+        {% for doctor in doctors %}
+          <option value="{{ doctor.id }}" {% if appointment and appointment.doctor_id == doctor.id %}selected{% endif %}>{{ doctor.first_name }} {{ doctor.last_name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Date <input type="date" name="appointment_date" value="{{ appointment.appointment_date if appointment else '' }}" required></label>
+    <label>Time <input type="time" name="appointment_time" value="{{ appointment.appointment_time if appointment else '' }}" required></label>
+    <label>Reason <input name="reason" value="{{ appointment.reason if appointment else '' }}" required></label>
+    <label>Status
+      <select name="status" required>
+        {% for status in statuses %}
+          <option value="{{ status }}" {% if appointment and appointment.status == status %}selected{% endif %}>{{ status }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <button type="submit">Save</button>
+  </form>
+{% endblock %}

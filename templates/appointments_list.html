@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Appointments{% endblock %}
+
+{% block content %}
+  <section class="sql-panel">SQL concept: SELECT with JOIN reads appointments with patient and doctor names.</section>
+  <p><a class="button" href="{{ url_for('appointment_new') }}">Add appointment</a></p>
+  <table>
+    <tr><th>Date</th><th>Time</th><th>Patient</th><th>Doctor</th><th>Reason</th><th>Status</th><th>Actions</th></tr>
+    {% for appointment in appointments %}
+      <tr>
+        <td>{{ appointment.appointment_date }}</td>
+        <td>{{ appointment.appointment_time }}</td>
+        <td>{{ appointment.patient_name }}</td>
+        <td>{{ appointment.doctor_name }}</td>
+        <td>{{ appointment.reason }}</td>
+        <td>{{ appointment.status }}</td>
+        <td>
+          <a href="{{ url_for('appointment_edit', appointment_id=appointment.id) }}">Edit</a>
+          <form class="inline" method="post" action="{{ url_for('appointment_delete', appointment_id=appointment.id) }}" onsubmit="return confirm('Delete this appointment?');">
+            <button type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

@@ -148,4 +148,102 @@ def create_app(test_config=None):
         get_db().commit()
         return redirect(url_for("doctors_list"))
 
+    def load_people_for_appointment_form():
+        patients = get_db().execute(
+            "SELECT id, first_name, last_name FROM patients ORDER BY last_name, first_name"
+        ).fetchall()
+        doctors = get_db().execute(
+            "SELECT id, first_name, last_name FROM doctors ORDER BY last_name, first_name"
+        ).fetchall()
+        return patients, doctors
+
+    @app.route("/appointments")
+    def appointments_list():
+        appointments = get_db().execute(
+            """
+            SELECT
+              appointments.id,
+              appointments.appointment_date,
+              appointments.appointment_time,
+              appointments.reason,
+              appointments.status,
+              patients.first_name || ' ' || patients.last_name AS patient_name,
+              doctors.first_name || ' ' || doctors.last_name AS doctor_name
+            FROM appointments
+            JOIN patients ON appointments.patient_id = patients.id
+            JOIN doctors ON appointments.doctor_id = doctors.id
+            ORDER BY appointments.appointment_date, appointments.appointment_time
+            """
+        ).fetchall()
+        return render_template("appointments_list.html", appointments=appointments)
+
+    @app.route("/appointments/new", methods=("GET", "POST"))
+    def appointment_new():
+        patients, doctors = load_people_for_appointment_form()
+        if request.method == "POST":
+            get_db().execute(
+                """
+                INSERT INTO appointments
+                  (patient_id, doctor_id, appointment_date, appointment_time, reason, status)
+                VALUES (?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    request.form["patient_id"],
+                    request.form["doctor_id"],
+                    request.form["appointment_date"],
+                    request.form["appointment_time"],
+                    request.form["reason"],
+                    request.form["status"],
+                ),
+            )
+            get_db().commit()
+            return redirect(url_for("appointments_list"))
+        return render_template(
+            "appointment_form.html",
+            appointment=None,
+            patients=patients,
+            doctors=doctors,
+            statuses=("scheduled", "completed", "cancelled"),
+        )
+
+    @app.route("/appointments/<int:appointment_id>/edit", methods=("GET", "POST"))
+    def appointment_edit(appointment_id):
+        appointment = get_db().execute(
+            "SELECT id, patient_id, doctor_id, appointment_date, appointment_time, reason, status FROM appointments WHERE id = ?",
+            (appointment_id,),
+        ).fetchone()
+        patients, doctors = load_people_for_appointment_form()
+        if request.method == "POST":
+            get_db().execute(
+                """
+                UPDATE appointments
+                SET patient_id = ?, doctor_id = ?, appointment_date = ?, appointment_time = ?, reason = ?, status = ?
+                WHERE id = ?
+                """,
+                (
+                    request.form["patient_id"],
+                    request.form["doctor_id"],
+                    request.form["appointment_date"],
+                    request.form["appointment_time"],
+                    request.form["reason"],
+                    request.form["status"],
+                    appointment_id,
+                ),
+            )
+            get_db().commit()
+            return redirect(url_for("appointments_list"))
+        return render_template(
+            "appointment_form.html",
+            appointment=appointment,
+            patients=patients,
+            doctors=doctors,
+            statuses=("scheduled", "completed", "cancelled"),
+        )
+
+    @app.post("/appointments/<int:appointment_id>/delete")
+    def appointment_delete(appointment_id):
+        get_db().execute("DELETE FROM appointments WHERE id = ?", (appointment_id,))
+        get_db().commit()
+        return redirect(url_for("appointments_list"))
+
     return app

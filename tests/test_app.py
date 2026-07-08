@@ -140,3 +140,49 @@ def test_doctors_crud(client_with_db, app_with_db):
 
     response = client_with_db.post(f"/doctors/{doctor['id']}/delete", follow_redirects=True)
     assert b"Noah Chen" not in response.data
+
+
+def test_appointments_crud(client_with_db, app_with_db):
+    response = client_with_db.get("/appointments")
+    assert response.status_code == 200
+    assert b"Ava Morgan" in response.data
+    assert b"Maya Patel" in response.data
+
+    response = client_with_db.post(
+        "/appointments/new",
+        data={
+            "patient_id": "1",
+            "doctor_id": "2",
+            "appointment_date": "2026-07-20",
+            "appointment_time": "14:00",
+            "reason": "Medication review",
+            "status": "scheduled",
+        },
+        follow_redirects=True,
+    )
+    assert b"Medication review" in response.data
+
+    with app_with_db.app_context():
+        appointment = get_db().execute(
+            "SELECT id FROM appointments WHERE reason = 'Medication review'"
+        ).fetchone()
+
+    response = client_with_db.post(
+        f"/appointments/{appointment['id']}/edit",
+        data={
+            "patient_id": "1",
+            "doctor_id": "2",
+            "appointment_date": "2026-07-20",
+            "appointment_time": "14:30",
+            "reason": "Medication review",
+            "status": "completed",
+        },
+        follow_redirects=True,
+    )
+    assert b"completed" in response.data
+
+    response = client_with_db.post(
+        f"/appointments/{appointment['id']}/delete",
+        follow_redirects=True,
+    )
+    assert b"Medication review" not in response.data
