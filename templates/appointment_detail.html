@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Appointment detail{% endblock %}
+
+{% block content %}
+  <section class="sql-panel">SQL concept: SELECT with JOIN reads one appointment and its related patient, doctor, and notes.</section>
+
+  <section class="panel">
+    <h2>{{ appointment.reason }}</h2>
+    <p><strong>Patient:</strong> {{ appointment.patient_name }}</p>
+    <p><strong>Doctor:</strong> {{ appointment.doctor_name }}</p>
+    <p><strong>Date:</strong> {{ appointment.appointment_date }} at {{ appointment.appointment_time }}</p>
+    <p><strong>Status:</strong> {{ appointment.status }}</p>
+  </section>
+
+  <section class="panel">
+    <h2>Notes</h2>
+    <section class="sql-panel">SQL concept: INSERT creates a note connected by appointment_id.</section>
+    <form method="post" action="{{ url_for('note_new', appointment_id=appointment.id) }}">
+      <label>New note
+        <textarea name="note_text" rows="4" required></textarea>
+      </label>
+      <button type="submit">Add note</button>
+    </form>
+
+    {% for note in notes %}
+      <article class="note">
+        <p>{{ note.note_text }}</p>
+        <small>{{ note.created_at }}</small>
+        <form method="post" action="{{ url_for('note_delete', note_id=note.id) }}" onsubmit="return confirm('Delete this note?');">
+          <button type="submit">Delete note</button>
+        </form>
+      </article>
+    {% else %}
+      <p>No notes yet.</p>
+    {% endfor %}
+  </section>
+{% endblock %}

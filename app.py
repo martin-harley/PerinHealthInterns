@@ -246,4 +246,49 @@ def create_app(test_config=None):
         get_db().commit()
         return redirect(url_for("appointments_list"))
 
+    @app.route("/appointments/<int:appointment_id>")
+    def appointment_detail(appointment_id):
+        appointment = get_db().execute(
+            """
+            SELECT
+              appointments.id,
+              appointments.appointment_date,
+              appointments.appointment_time,
+              appointments.reason,
+              appointments.status,
+              patients.first_name || ' ' || patients.last_name AS patient_name,
+              doctors.first_name || ' ' || doctors.last_name AS doctor_name
+            FROM appointments
+            JOIN patients ON appointments.patient_id = patients.id
+            JOIN doctors ON appointments.doctor_id = doctors.id
+            WHERE appointments.id = ?
+            """,
+            (appointment_id,),
+        ).fetchone()
+        notes = get_db().execute(
+            "SELECT id, note_text, created_at FROM appointment_notes WHERE appointment_id = ? ORDER BY created_at DESC, id DESC",
+            (appointment_id,),
+        ).fetchall()
+        return render_template("appointment_detail.html", appointment=appointment, notes=notes)
+
+    @app.post("/appointments/<int:appointment_id>/notes")
+    def note_new(appointment_id):
+        get_db().execute(
+            "INSERT INTO appointment_notes (appointment_id, note_text) VALUES (?, ?)",
+            (appointment_id, request.form["note_text"]),
+        )
+        get_db().commit()
+        return redirect(url_for("appointment_detail", appointment_id=appointment_id))
+
+    @app.post("/notes/<int:note_id>/delete")
+    def note_delete(note_id):
+        row = get_db().execute(
+            "SELECT appointment_id FROM appointment_notes WHERE id = ?",
+            (note_id,),
+        ).fetchone()
+        appointment_id = row["appointment_id"]
+        get_db().execute("DELETE FROM appointment_notes WHERE id = ?", (note_id,))
+        get_db().commit()
+        return redirect(url_for("appointment_detail", appointment_id=appointment_id))
+
     return app

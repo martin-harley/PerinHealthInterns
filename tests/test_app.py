@@ -186,3 +186,24 @@ def test_appointments_crud(client_with_db, app_with_db):
         follow_redirects=True,
     )
     assert b"Medication review" not in response.data
+
+
+def test_appointment_detail_and_notes_crud(client_with_db, app_with_db):
+    response = client_with_db.get("/appointments/1")
+    assert response.status_code == 200
+    assert b"Annual checkup" in response.data
+
+    response = client_with_db.post(
+        "/appointments/1/notes",
+        data={"note_text": "Fictional note for teaching CRUD."},
+        follow_redirects=True,
+    )
+    assert b"Fictional note for teaching CRUD." in response.data
+
+    with app_with_db.app_context():
+        note = get_db().execute(
+            "SELECT id FROM appointment_notes WHERE note_text = 'Fictional note for teaching CRUD.'"
+        ).fetchone()
+
+    response = client_with_db.post(f"/notes/{note['id']}/delete", follow_redirects=True)
+    assert b"Fictional note for teaching CRUD." not in response.data
