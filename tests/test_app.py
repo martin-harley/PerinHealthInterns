@@ -1,3 +1,8 @@
+import os
+import tempfile
+
+import pytest
+
 from app import create_app, get_db, init_db
 
 
@@ -45,3 +50,93 @@ def test_seed_data_adds_example_patient():
         ).fetchone()
 
     assert dict(row) == {"first_name": "Ava", "last_name": "Morgan"}
+
+
+@pytest.fixture
+def app_with_db():
+    db_fd, db_path = tempfile.mkstemp()
+    app = create_app({"TESTING": True, "DATABASE": db_path})
+    with app.app_context():
+        init_db()
+    yield app
+    os.close(db_fd)
+    os.unlink(db_path)
+
+
+@pytest.fixture
+def client_with_db(app_with_db):
+    return app_with_db.test_client()
+
+
+def test_patients_crud(client_with_db, app_with_db):
+    response = client_with_db.get("/patients")
+    assert response.status_code == 200
+    assert b"Ava Morgan" in response.data
+
+    response = client_with_db.post(
+        "/patients/new",
+        data={
+            "first_name": "Sam",
+            "last_name": "Taylor",
+            "date_of_birth": "1995-02-20",
+            "phone": "555-0199",
+        },
+        follow_redirects=True,
+    )
+    assert b"Sam Taylor" in response.data
+
+    with app_with_db.app_context():
+        patient = get_db().execute(
+            "SELECT id FROM patients WHERE first_name = 'Sam'"
+        ).fetchone()
+
+    response = client_with_db.post(
+        f"/patients/{patient['id']}/edit",
+        data={
+            "first_name": "Samantha",
+            "last_name": "Taylor",
+            "date_of_birth": "1995-02-20",
+            "phone": "555-0199",
+        },
+        follow_redirects=True,
+    )
+    assert b"Samantha Taylor" in response.data
+
+    response = client_with_db.post(f"/patients/{patient['id']}/delete", follow_redirects=True)
+    assert b"Samantha Taylor" not in response.data
+
+
+def test_doctors_crud(client_with_db, app_with_db):
+    response = client_with_db.get("/doctors")
+    assert response.status_code == 200
+    assert b"Maya Patel" in response.data
+
+    response = client_with_db.post(
+        "/doctors/new",
+        data={
+            "first_name": "Noah",
+            "last_name": "Chen",
+            "specialty": "Pediatrics",
+        },
+        follow_redirects=True,
+    )
+    assert b"Noah Chen" in response.data
+
+    with app_with_db.app_context():
+        doctor = get_db().execute(
+            "SELECT id FROM doctors WHERE first_name = 'Noah'"
+        ).fetchone()
+
+    response = client_with_db.post(
+        f"/doctors/{doctor['id']}/edit",
+        data={
+            "first_name": "Noah",
+            "last_name": "Chen",
+            "specialty": "Internal Medicine",
+        },
+        follow_redirects=True,
+    )
+    assert b"Internal Medicine" in response.data
+
+    response = client_with_db.post(f"/doctors/{doctor['id']}/delete", follow_redirects=True)
+    assert b"Noah Chen" not in response.data

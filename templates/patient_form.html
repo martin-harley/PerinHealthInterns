@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}{% if patient %}Edit patient{% else %}Add patient{% endif %}{% endblock %}
+
+{% block content %}
+  <section class="sql-panel">SQL concept: {% if patient %}UPDATE changes an existing patient row.{% else %}INSERT creates a new patient row.{% endif %}</section>
+  <form method="post">
+    <label>First name <input name="first_name" value="{{ patient.first_name if patient else '' }}" required></label>
+    <label>Last name <input name="last_name" value="{{ patient.last_name if patient else '' }}" required></label>
+    <label>Date of birth <input type="date" name="date_of_birth" value="{{ patient.date_of_birth if patient else '' }}" required></label>
+    <label>Phone <input name="phone" value="{{ patient.phone if patient else '' }}" required></label>
+    <button type="submit">Save</button>
+  </form>
+{% endblock %}

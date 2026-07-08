@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Doctors{% endblock %}
+
+{% block content %}
+  <section class="sql-panel">SQL concept: SELECT reads rows from the doctors table.</section>
+  <p><a class="button" href="{{ url_for('doctor_new') }}">Add doctor</a></p>
+  <table>
+    <tr><th>Name</th><th>Specialty</th><th>Actions</th></tr>
+    {% for doctor in doctors %}
+      <tr>
+        <td>{{ doctor.first_name }} {{ doctor.last_name }}</td>
+        <td>{{ doctor.specialty }}</td>
+        <td>
+          <a href="{{ url_for('doctor_edit', doctor_id=doctor.id) }}">Edit</a>
+          <form class="inline" method="post" action="{{ url_for('doctor_delete', doctor_id=doctor.id) }}" onsubmit="return confirm('Delete this doctor?');">
+            <button type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

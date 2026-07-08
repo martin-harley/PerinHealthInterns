@@ -28,3 +28,52 @@ main {
   border-radius: 6px;
   padding: 1rem;
 }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+th,
+td {
+  border: 1px solid #d9e2ec;
+  padding: 0.6rem;
+  text-align: left;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.8rem;
+}
+
+input,
+select,
+textarea {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  padding: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+button,
+.button {
+  background: #0f766e;
+  border: 0;
+  color: white;
+  display: inline-block;
+  padding: 0.5rem 0.75rem;
+  text-decoration: none;
+}
+
+.inline {
+  display: inline;
+}
+
+.sql-panel {
+  background: #eef6ff;
+  border-left: 4px solid #2563eb;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+}
