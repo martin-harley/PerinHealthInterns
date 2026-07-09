@@ -14,17 +14,6 @@
 
   <section class="schema-map-shell">
     <div class="schema-map" aria-label="Interactive schema map">
-      <svg class="schema-arrows" aria-hidden="true" focusable="false">
-        <defs>
-          <marker id="schema-arrowhead" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
-            <path d="M 0 0 L 10 5 L 0 10 z"></path>
-          </marker>
-        </defs>
-        <path class="schema-arrow" data-from="appointments.patient_id" data-to="patients.id" data-connects="patients appointments"></path>
-        <path class="schema-arrow" data-from="appointments.doctor_id" data-to="doctors.id" data-connects="doctors appointments"></path>
-        <path class="schema-arrow" data-from="appointment_notes.appointment_id" data-to="appointments.id" data-connects="appointments appointment_notes"></path>
-      </svg>
-
       <button class="schema-node schema-node-patients" type="button" data-table="patients">
         <strong>patients</strong>
         <span class="schema-field schema-field-pk" data-field="patients.id"><i class="schema-port schema-port-in"></i>id</span>
@@ -33,6 +22,12 @@
         <span class="schema-field">date_of_birth</span>
         <span class="schema-field">phone</span>
       </button>
+
+      <div class="schema-arrow schema-connector schema-connector-horizontal schema-connector-left" data-from="appointments.patient_id" data-to="patients.id" data-connects="patients appointments">
+        <span class="schema-connector-label">appointments.patient_id</span>
+        <span class="schema-connector-line"></span>
+        <span class="schema-connector-label">patients.id</span>
+      </div>
 
       <button class="schema-node schema-node-doctors" type="button" data-table="doctors">
         <strong>doctors</strong>
@@ -52,6 +47,18 @@
         <span class="schema-field">reason</span>
         <span class="schema-field">status</span>
       </button>
+
+      <div class="schema-arrow schema-connector schema-connector-horizontal schema-connector-right" data-from="appointments.doctor_id" data-to="doctors.id" data-connects="doctors appointments">
+        <span class="schema-connector-label">appointments.doctor_id</span>
+        <span class="schema-connector-line"></span>
+        <span class="schema-connector-label">doctors.id</span>
+      </div>
+
+      <div class="schema-arrow schema-connector schema-connector-vertical schema-connector-up" data-from="appointment_notes.appointment_id" data-to="appointments.id" data-connects="appointments appointment_notes">
+        <span class="schema-connector-label">appointment_notes.appointment_id</span>
+        <span class="schema-connector-line"></span>
+        <span class="schema-connector-label">appointments.id</span>
+      </div>
 
       <button class="schema-node schema-node-notes" type="button" data-table="appointment_notes">
         <strong>appointment_notes</strong>

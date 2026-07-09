@@ -302,7 +302,7 @@ button,
 .schema-map-shell {
   display: grid;
   gap: 1rem;
-  grid-template-columns: minmax(420px, 1fr) minmax(240px, 0.38fr);
+  grid-template-columns: 1fr;
   margin-bottom: 1rem;
 }
 
@@ -310,34 +310,18 @@ button,
   background: #f8fafc;
   border: 1px solid #d9e2ec;
   border-radius: 8px;
-  min-height: 1040px;
-  overflow: hidden;
-  position: relative;
-}
-
-.schema-arrows {
-  height: 100%;
-  inset: 0;
-  pointer-events: none;
-  position: absolute;
-  width: 100%;
-  z-index: 1;
+  display: grid;
+  gap: 1rem 0;
+  grid-template-columns: minmax(170px, 1fr) 150px minmax(220px, 1.15fr) 150px minmax(170px, 1fr);
+  grid-template-rows: auto 96px auto;
+  overflow: visible;
+  padding: 1.5rem;
 }
 
 .schema-arrow {
-  fill: none;
-  marker-end: url("#schema-arrowhead");
-  stroke: #0f766e;
-  stroke-linecap: round;
-  stroke-width: 3.5;
-}
-
-#schema-arrowhead path {
-  fill: #0f766e;
-}
-
-.schema-arrow.is-active {
-  stroke: #0f766e;
+  color: #0f766e;
+  opacity: 0.55;
+  transition: opacity 150ms ease-out;
 }
 
 .schema-node {
@@ -347,10 +331,9 @@ button,
   color: #1f2933;
   cursor: pointer;
   padding: 0.85rem 0.9rem;
-  position: absolute;
+  position: relative;
   text-align: left;
-  width: 270px;
-  z-index: 2;
+  width: auto;
 }
 
 .schema-node:hover,
@@ -420,23 +403,116 @@ button,
 }
 
 .schema-node-patients {
-  left: 3rem;
-  top: 3rem;
+  grid-column: 1;
+  grid-row: 1;
 }
 
 .schema-node-doctors {
-  right: 3rem;
-  top: 3rem;
+  grid-column: 5;
+  grid-row: 1;
 }
 
 .schema-node-appointments {
-  left: calc(50% - 135px);
-  top: 24rem;
+  grid-column: 3;
+  grid-row: 1;
 }
 
 .schema-node-notes {
-  left: calc(50% - 135px);
-  top: 51rem;
+  grid-column: 3;
+  grid-row: 3;
+}
+
+.schema-connector {
+  align-self: center;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.schema-connector-horizontal {
+  grid-template-rows: auto 0.8rem auto;
+  padding: 0 0.7rem;
+}
+
+.schema-connector-left {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.schema-connector-right {
+  grid-column: 4;
+  grid-row: 1;
+}
+
+.schema-connector-vertical {
+  align-self: stretch;
+  grid-column: 3;
+  grid-row: 2;
+  grid-template-rows: auto 1fr auto;
+  justify-self: center;
+  min-height: 96px;
+  width: 180px;
+}
+
+.schema-connector-label {
+  color: #334e68;
+  display: block;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.66rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+.schema-connector-line {
+  background: currentColor;
+  border-radius: 999px;
+  display: block;
+  position: relative;
+}
+
+.schema-connector-horizontal .schema-connector-line {
+  height: 0.2rem;
+}
+
+.schema-connector-left .schema-connector-line::before,
+.schema-connector-right .schema-connector-line::after {
+  border-bottom: 0.42rem solid transparent;
+  border-top: 0.42rem solid transparent;
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.schema-connector-left .schema-connector-line::before {
+  border-right: 0.7rem solid currentColor;
+  left: -0.1rem;
+}
+
+.schema-connector-right .schema-connector-line::after {
+  border-left: 0.7rem solid currentColor;
+  right: -0.1rem;
+}
+
+.schema-connector-vertical .schema-connector-line {
+  height: 100%;
+  justify-self: center;
+  width: 0.22rem;
+}
+
+.schema-connector-up .schema-connector-line::before {
+  border-bottom: 0.7rem solid currentColor;
+  border-left: 0.42rem solid transparent;
+  border-right: 0.42rem solid transparent;
+  content: "";
+  left: 50%;
+  position: absolute;
+  top: -0.1rem;
+  transform: translateX(-50%);
+}
+
+.schema-arrow.is-active {
+  opacity: 1;
 }
 
 .schema-details {
@@ -736,37 +812,23 @@ button,
 }
 
 @media (max-width: 760px) {
-  .sandbox-layout,
-  .schema-map-shell {
+  .sandbox-layout {
     grid-template-columns: 1fr;
   }
 
   .schema-map {
-    min-height: 1120px;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
   }
 
   .schema-node-patients,
   .schema-node-doctors,
   .schema-node-appointments,
-  .schema-node-notes {
-    left: 1rem;
-    right: 1rem;
-    width: auto;
-  }
-
-  .schema-node-patients {
-    top: 1rem;
-  }
-
-  .schema-node-doctors {
-    top: 17rem;
-  }
-
-  .schema-node-appointments {
-    top: 33rem;
-  }
-
-  .schema-node-notes {
-    bottom: 1rem;
+  .schema-node-notes,
+  .schema-connector-left,
+  .schema-connector-right,
+  .schema-connector-vertical {
+    grid-column: 1;
+    grid-row: auto;
   }
 }

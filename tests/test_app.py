@@ -267,6 +267,7 @@ def test_schema_page_shows_interactive_schema_map(client_with_db):
     assert b"data-field=\"appointments.patient_id\"" in response.data
     assert b"data-from=\"appointments.patient_id\"" in response.data
     assert b"data-to=\"patients.id\"" in response.data
+    assert b"schema-connector-label" in response.data
     assert b"data-connects=\"patients appointments\"" in response.data
     assert b"Link the tables" not in response.data
 
