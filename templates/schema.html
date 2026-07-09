@@ -14,51 +14,51 @@
 
   <section class="schema-map-shell">
     <div class="schema-map" aria-label="Interactive schema map">
-      <svg class="schema-arrows" viewBox="0 0 1000 560" aria-hidden="true" focusable="false">
+      <svg class="schema-arrows" viewBox="0 0 1000 1080" aria-hidden="true" focusable="false">
         <defs>
           <marker id="schema-arrowhead" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
             <path d="M 0 0 L 10 5 L 0 10 z"></path>
           </marker>
         </defs>
-        <path class="schema-arrow" data-connects="patients appointments" d="M 290 143 C 390 143, 430 235, 500 265"></path>
-        <path class="schema-arrow" data-connects="doctors appointments" d="M 710 143 C 610 143, 570 235, 500 265"></path>
-        <path class="schema-arrow" data-connects="appointments appointment_notes" d="M 500 390 C 500 430, 500 445, 500 468"></path>
+        <path class="schema-arrow" data-connects="patients appointments" d="M 365 510 C 250 510, 325 142, 310 142"></path>
+        <path class="schema-arrow" data-connects="doctors appointments" d="M 635 556 C 750 556, 675 142, 690 142"></path>
+        <path class="schema-arrow" data-connects="appointments appointment_notes" d="M 365 930 C 220 930, 220 470, 365 470"></path>
       </svg>
 
       <button class="schema-node schema-node-patients" type="button" data-table="patients">
         <strong>patients</strong>
-        <span>id</span>
-        <span>first_name</span>
-        <span>last_name</span>
-        <span>date_of_birth</span>
-        <span>phone</span>
+        <span class="schema-field schema-field-pk" data-field="patients.id"><i class="schema-port schema-port-in"></i>id</span>
+        <span class="schema-field">first_name</span>
+        <span class="schema-field">last_name</span>
+        <span class="schema-field">date_of_birth</span>
+        <span class="schema-field">phone</span>
       </button>
 
       <button class="schema-node schema-node-doctors" type="button" data-table="doctors">
         <strong>doctors</strong>
-        <span>id</span>
-        <span>first_name</span>
-        <span>last_name</span>
-        <span>specialty</span>
+        <span class="schema-field schema-field-pk" data-field="doctors.id"><i class="schema-port schema-port-in"></i>id</span>
+        <span class="schema-field">first_name</span>
+        <span class="schema-field">last_name</span>
+        <span class="schema-field">specialty</span>
       </button>
 
       <button class="schema-node schema-node-appointments is-active" type="button" data-table="appointments">
         <strong>appointments</strong>
-        <span>id</span>
-        <span>patient_id &rarr; patients.id</span>
-        <span>doctor_id &rarr; doctors.id</span>
-        <span>appointment_date</span>
-        <span>appointment_time</span>
-        <span>reason</span>
-        <span>status</span>
+        <span class="schema-field schema-field-pk" data-field="appointments.id"><i class="schema-port schema-port-in"></i>id</span>
+        <span class="schema-field schema-field-fk" data-field="appointments.patient_id"><i class="schema-port schema-port-out"></i>patient_id <small>patients.id</small></span>
+        <span class="schema-field schema-field-fk" data-field="appointments.doctor_id"><i class="schema-port schema-port-out"></i>doctor_id <small>doctors.id</small></span>
+        <span class="schema-field">appointment_date</span>
+        <span class="schema-field">appointment_time</span>
+        <span class="schema-field">reason</span>
+        <span class="schema-field">status</span>
       </button>
 
       <button class="schema-node schema-node-notes" type="button" data-table="appointment_notes">
         <strong>appointment_notes</strong>
-        <span>id</span>
-        <span>appointment_id &rarr; appointments.id</span>
-        <span>note_text</span>
-        <span>created_at</span>
+        <span class="schema-field schema-field-pk" data-field="appointment_notes.id"><i class="schema-port schema-port-in"></i>id</span>
+        <span class="schema-field schema-field-fk" data-field="appointment_notes.appointment_id"><i class="schema-port schema-port-out"></i>appointment_id <small>appointments.id</small></span>
+        <span class="schema-field">note_text</span>
+        <span class="schema-field">created_at</span>
       </button>
     </div>
 

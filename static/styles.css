@@ -310,7 +310,7 @@ button,
   background: #f8fafc;
   border: 1px solid #d9e2ec;
   border-radius: 8px;
-  min-height: 560px;
+  min-height: 1040px;
   overflow: hidden;
   position: relative;
 }
@@ -327,7 +327,7 @@ button,
   marker-end: url("#schema-arrowhead");
   stroke: #94a3b8;
   stroke-linecap: round;
-  stroke-width: 5;
+  stroke-width: 4;
 }
 
 #schema-arrowhead path {
@@ -344,10 +344,10 @@ button,
   border-radius: 8px;
   color: #1f2933;
   cursor: pointer;
-  padding: 0.85rem;
+  padding: 0.85rem 0.9rem;
   position: absolute;
   text-align: left;
-  width: 210px;
+  width: 270px;
   z-index: 1;
 }
 
@@ -367,30 +367,68 @@ button,
 }
 
 .schema-node span {
+  align-items: center;
   border-top: 1px solid #e2e8f0;
+  display: flex;
   font-family: Consolas, "Courier New", monospace;
   font-size: 0.82rem;
+  min-height: 2rem;
   padding: 0.32rem 0;
+  position: relative;
+}
+
+.schema-node small {
+  color: #52606d;
+  font-size: 0.75rem;
+  margin-left: auto;
+}
+
+.schema-field-fk {
+  background: #f8fafc;
+  color: #0f766e;
+  font-weight: 700;
+}
+
+.schema-port {
+  background: white;
+  border: 2px solid #94a3b8;
+  border-radius: 999px;
+  height: 0.72rem;
+  position: absolute;
+  width: 0.72rem;
+}
+
+.schema-port-in {
+  left: -1.28rem;
+}
+
+.schema-port-out {
+  right: -1.28rem;
+}
+
+.schema-field-fk .schema-port {
+  background: #0f766e;
+  border-color: #0f766e;
 }
 
 .schema-node-patients {
-  left: 6%;
-  top: 8%;
+  left: 3rem;
+  top: 3rem;
 }
 
 .schema-node-doctors {
-  right: 6%;
-  top: 8%;
+  right: 3rem;
+  top: 3rem;
 }
 
 .schema-node-appointments {
-  left: calc(50% - 105px);
-  top: 34%;
+  left: calc(50% - 135px);
+  top: 24rem;
 }
 
 .schema-node-notes {
-  left: calc(50% - 105px);
-  bottom: 5%;
+  left: calc(50% - 135px);
+  top: 51rem;
 }
 
 .schema-details {
@@ -415,12 +453,15 @@ button,
   border-radius: 6px;
   overflow-x: auto;
   padding: 0.85rem;
+  white-space: pre-wrap;
 }
 
 .schema-details code {
   color: #bfdbfe;
+  display: block;
   font-family: Consolas, "Courier New", monospace;
   line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .schema-intro {
@@ -693,7 +734,7 @@ button,
   }
 
   .schema-map {
-    min-height: 760px;
+    min-height: 1120px;
   }
 
   .schema-node-patients,
@@ -710,11 +751,11 @@ button,
   }
 
   .schema-node-doctors {
-    top: 12rem;
+    top: 17rem;
   }
 
   .schema-node-appointments {
-    top: 22rem;
+    top: 33rem;
   }
 
   .schema-node-notes {
