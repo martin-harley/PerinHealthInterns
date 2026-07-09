@@ -318,20 +318,22 @@ button,
 .schema-arrows {
   height: 100%;
   inset: 0;
+  pointer-events: none;
   position: absolute;
   width: 100%;
+  z-index: 1;
 }
 
 .schema-arrow {
   fill: none;
   marker-end: url("#schema-arrowhead");
-  stroke: #94a3b8;
+  stroke: #0f766e;
   stroke-linecap: round;
-  stroke-width: 4;
+  stroke-width: 3.5;
 }
 
 #schema-arrowhead path {
-  fill: #94a3b8;
+  fill: #0f766e;
 }
 
 .schema-arrow.is-active {
@@ -348,7 +350,7 @@ button,
   position: absolute;
   text-align: left;
   width: 270px;
-  z-index: 1;
+  z-index: 2;
 }
 
 .schema-node:hover,
@@ -402,8 +404,14 @@ button,
   left: -1.28rem;
 }
 
-.schema-port-out {
+.schema-port-out,
+.schema-port-right {
   right: -1.28rem;
+}
+
+.schema-port-left {
+  left: -1.28rem;
+  right: auto;
 }
 
 .schema-field-fk .schema-port {
