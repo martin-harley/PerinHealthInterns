@@ -97,6 +97,10 @@ def create_app(test_config=None):
     def sandbox():
         return render_template("sandbox.html")
 
+    @app.route("/schema")
+    def schema():
+        return render_template("schema.html")
+
     @app.post("/sandbox/run")
     def sandbox_run():
         sql = request.form.get("sql", "")

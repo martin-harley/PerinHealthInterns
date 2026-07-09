@@ -22,6 +22,7 @@ def test_home_page_loads():
     assert response.status_code == 200
     assert b"Perin Health Appointment Tracker" in response.data
     assert b"Sandbox" in response.data
+    assert b"Schema" in response.data
 
 
 def test_home_page_guides_beginner_workflow():
@@ -231,7 +232,6 @@ def test_sandbox_page_has_builder_and_typed_tabs(client_with_db):
     assert b"SQL Sandbox" in response.data
     assert b"Drag & Build" in response.data
     assert b"Type SQL" in response.data
-    assert b"Schema" in response.data
     assert b"draggable=\"true\"" in response.data
     assert b"SQL actions" in response.data
     assert b"Tables" in response.data
@@ -245,13 +245,14 @@ def test_sandbox_page_has_builder_and_typed_tabs(client_with_db):
     assert b'<input type="hidden" id="builder-sql" name="sql"' in response.data
     assert b'<textarea id="builder-sql"' not in response.data
     assert b"SELECT patients" not in response.data
+    assert b"Link the tables" not in response.data
 
 
-def test_sandbox_schema_tab_shows_relationship_practice(client_with_db):
-    response = client_with_db.get("/sandbox")
+def test_schema_page_shows_interactive_schema_map(client_with_db):
+    response = client_with_db.get("/schema")
 
     assert response.status_code == 200
-    assert b"How tables connect" in response.data
+    assert b"Interactive Schema Map" in response.data
     assert b"patients" in response.data
     assert b"doctors" in response.data
     assert b"appointments" in response.data
@@ -259,10 +260,10 @@ def test_sandbox_schema_tab_shows_relationship_practice(client_with_db):
     assert b"appointments.patient_id" in response.data
     assert b"appointments.doctor_id" in response.data
     assert b"appointment_notes.appointment_id" in response.data
-    assert b"Link the tables" in response.data
-    assert b'data-accept="patients"' in response.data
-    assert b'data-accept="doctors"' in response.data
-    assert b'data-accept="appointments"' in response.data
+    assert b"class=\"schema-arrow" in response.data
+    assert b"data-table=\"appointments\"" in response.data
+    assert b"data-connects=\"patients appointments\"" in response.data
+    assert b"Link the tables" not in response.data
 
 
 def test_sandbox_typed_select_returns_rows(client_with_db):

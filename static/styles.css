@@ -284,8 +284,7 @@ button,
 }
 
 #tab-builder:checked ~ .tab-list label[for="tab-builder"],
-#tab-typed:checked ~ .tab-list label[for="tab-typed"],
-#tab-schema:checked ~ .tab-list label[for="tab-schema"] {
+#tab-typed:checked ~ .tab-list label[for="tab-typed"] {
   background: #0f766e;
   border-color: #0f766e;
   color: white;
@@ -296,9 +295,132 @@ button,
 }
 
 #tab-builder:checked ~ .builder-panel,
-#tab-typed:checked ~ .typed-panel,
-#tab-schema:checked ~ .schema-panel {
+#tab-typed:checked ~ .typed-panel {
   display: block;
+}
+
+.schema-map-shell {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(420px, 1fr) minmax(240px, 0.38fr);
+  margin-bottom: 1rem;
+}
+
+.schema-map {
+  background: #f8fafc;
+  border: 1px solid #d9e2ec;
+  border-radius: 8px;
+  min-height: 560px;
+  overflow: hidden;
+  position: relative;
+}
+
+.schema-arrows {
+  height: 100%;
+  inset: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.schema-arrow {
+  fill: none;
+  marker-end: url("#schema-arrowhead");
+  stroke: #94a3b8;
+  stroke-linecap: round;
+  stroke-width: 5;
+}
+
+#schema-arrowhead path {
+  fill: #94a3b8;
+}
+
+.schema-arrow.is-active {
+  stroke: #0f766e;
+}
+
+.schema-node {
+  background: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  color: #1f2933;
+  cursor: pointer;
+  padding: 0.85rem;
+  position: absolute;
+  text-align: left;
+  width: 210px;
+  z-index: 1;
+}
+
+.schema-node:hover,
+.schema-node.is-active {
+  border-color: #0f766e;
+  box-shadow: 0 0 0 3px #ccfbf1;
+}
+
+.schema-node strong,
+.schema-node span {
+  display: block;
+}
+
+.schema-node strong {
+  margin-bottom: 0.45rem;
+}
+
+.schema-node span {
+  border-top: 1px solid #e2e8f0;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.82rem;
+  padding: 0.32rem 0;
+}
+
+.schema-node-patients {
+  left: 6%;
+  top: 8%;
+}
+
+.schema-node-doctors {
+  right: 6%;
+  top: 8%;
+}
+
+.schema-node-appointments {
+  left: calc(50% - 105px);
+  top: 34%;
+}
+
+.schema-node-notes {
+  left: calc(50% - 105px);
+  bottom: 5%;
+}
+
+.schema-details {
+  background: #111827;
+  border-radius: 8px;
+  color: #e5e7eb;
+  padding: 1rem;
+}
+
+.schema-details h3 {
+  margin: 0 0 0.65rem;
+}
+
+.schema-details p {
+  color: #d1d5db;
+  line-height: 1.45;
+}
+
+.schema-details pre {
+  background: #020617;
+  border: 1px solid #374151;
+  border-radius: 6px;
+  overflow-x: auto;
+  padding: 0.85rem;
+}
+
+.schema-details code {
+  color: #bfdbfe;
+  font-family: Consolas, "Courier New", monospace;
+  line-height: 1.5;
 }
 
 .schema-intro {
@@ -323,8 +445,7 @@ button,
 }
 
 .schema-table-card,
-.relationship-map,
-.schema-practice {
+.relationship-map {
   background: #f8fafc;
   border: 1px solid #d9e2ec;
   border-radius: 6px;
@@ -332,8 +453,7 @@ button,
 }
 
 .schema-table-card h4,
-.relationship-map h4,
-.schema-practice h4 {
+.relationship-map h4 {
   margin: 0 0 0.75rem;
 }
 
@@ -374,69 +494,6 @@ button,
 .relationship-map code {
   color: #1e3a8a;
   font-family: Consolas, "Courier New", monospace;
-}
-
-.schema-practice > div:first-child p {
-  color: #52606d;
-  margin: -0.35rem 0 1rem;
-}
-
-.relationship-practice-grid {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: minmax(220px, 0.8fr) minmax(260px, 1.2fr);
-}
-
-.relationship-token-bank,
-.relationship-drop-list {
-  display: grid;
-  gap: 0.65rem;
-}
-
-.relationship-token {
-  background: #111827;
-  border: 1px solid #1f2937;
-  border-radius: 999px;
-  color: #e5e7eb;
-  cursor: grab;
-  font-family: Consolas, "Courier New", monospace;
-  padding: 0.55rem 0.75rem;
-  text-align: left;
-}
-
-.relationship-drop {
-  background: white;
-  border: 2px dashed #cbd5e1;
-  border-radius: 8px;
-  min-height: 54px;
-  padding: 0.75rem;
-}
-
-.relationship-drop strong,
-.relationship-drop span {
-  display: block;
-}
-
-.relationship-drop span {
-  color: #52606d;
-  font-size: 0.9rem;
-  margin-top: 0.25rem;
-}
-
-.relationship-drop.is-correct {
-  background: #ecfdf5;
-  border-color: #0f766e;
-}
-
-.relationship-drop.is-wrong {
-  background: #fef2f2;
-  border-color: #ef4444;
-}
-
-.relationship-feedback {
-  color: #334e68;
-  font-weight: 700;
-  margin: 0.85rem 0 0;
 }
 
 .sandbox-layout {
@@ -631,7 +688,36 @@ button,
 
 @media (max-width: 760px) {
   .sandbox-layout,
-  .relationship-practice-grid {
+  .schema-map-shell {
     grid-template-columns: 1fr;
+  }
+
+  .schema-map {
+    min-height: 760px;
+  }
+
+  .schema-node-patients,
+  .schema-node-doctors,
+  .schema-node-appointments,
+  .schema-node-notes {
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+  }
+
+  .schema-node-patients {
+    top: 1rem;
+  }
+
+  .schema-node-doctors {
+    top: 12rem;
+  }
+
+  .schema-node-appointments {
+    top: 22rem;
+  }
+
+  .schema-node-notes {
+    bottom: 1rem;
   }
 }

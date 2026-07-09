@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Schema Map{% endblock %}
+
+{% block content %}
+  <section class="home-hero">
+    <p class="eyebrow">Relational database map</p>
+    <h2>Interactive Schema Map</h2>
+    <p>
+      See how fictional patients, doctors, appointments, and notes connect.
+      Select a table to highlight its relationships.
+    </p>
+  </section>
+
+  <section class="schema-map-shell">
+    <div class="schema-map" aria-label="Interactive schema map">
+      <svg class="schema-arrows" viewBox="0 0 1000 560" aria-hidden="true" focusable="false">
+        <defs>
+          <marker id="schema-arrowhead" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z"></path>
+          </marker>
+        </defs>
+        <path class="schema-arrow" data-connects="patients appointments" d="M 290 143 C 390 143, 430 235, 500 265"></path>
+        <path class="schema-arrow" data-connects="doctors appointments" d="M 710 143 C 610 143, 570 235, 500 265"></path>
+        <path class="schema-arrow" data-connects="appointments appointment_notes" d="M 500 390 C 500 430, 500 445, 500 468"></path>
+      </svg>
+
+      <button class="schema-node schema-node-patients" type="button" data-table="patients">
+        <strong>patients</strong>
+        <span>id</span>
+        <span>first_name</span>
+        <span>last_name</span>
+        <span>date_of_birth</span>
+        <span>phone</span>
+      </button>
+
+      <button class="schema-node schema-node-doctors" type="button" data-table="doctors">
+        <strong>doctors</strong>
+        <span>id</span>
+        <span>first_name</span>
+        <span>last_name</span>
+        <span>specialty</span>
+      </button>
+
+      <button class="schema-node schema-node-appointments is-active" type="button" data-table="appointments">
+        <strong>appointments</strong>
+        <span>id</span>
+        <span>patient_id &rarr; patients.id</span>
+        <span>doctor_id &rarr; doctors.id</span>
+        <span>appointment_date</span>
+        <span>appointment_time</span>
+        <span>reason</span>
+        <span>status</span>
+      </button>
+
+      <button class="schema-node schema-node-notes" type="button" data-table="appointment_notes">
+        <strong>appointment_notes</strong>
+        <span>id</span>
+        <span>appointment_id &rarr; appointments.id</span>
+        <span>note_text</span>
+        <span>created_at</span>
+      </button>
+    </div>
+
+    <aside class="schema-details" aria-live="polite">
+      <h3 id="schema-detail-title">appointments</h3>
+      <p id="schema-detail-copy">
+        Appointments sit in the middle. Each appointment belongs to one patient and one doctor.
+      </p>
+      <pre><code id="schema-detail-sql">JOIN patients ON appointments.patient_id = patients.id
+JOIN doctors ON appointments.doctor_id = doctors.id</code></pre>
+    </aside>
+  </section>
+
+  <section class="relationship-map" aria-label="Schema relationships">
+    <h3>Relationships</h3>
+    <ul>
+      <li><code>appointments.patient_id</code> connects appointments to <code>patients.id</code>.</li>
+      <li><code>appointments.doctor_id</code> connects appointments to <code>doctors.id</code>.</li>
+      <li><code>appointment_notes.appointment_id</code> connects notes to <code>appointments.id</code>.</li>
+    </ul>
+  </section>
+
+  <script src="{{ url_for('static', filename='schema.js') }}"></script>
+{% endblock %}
