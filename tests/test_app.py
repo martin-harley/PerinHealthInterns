@@ -238,6 +238,10 @@ def test_sandbox_page_has_builder_and_typed_tabs(client_with_db):
     assert b'data-sql="SELECT "' in response.data
     assert b'data-sql="patients"' in response.data
     assert b'data-sql="first_name"' in response.data
+    assert b'id="builder-chip-board"' in response.data
+    assert b'id="builder-sql-preview"' in response.data
+    assert b'<input type="hidden" id="builder-sql" name="sql"' in response.data
+    assert b'<textarea id="builder-sql"' not in response.data
     assert b"SELECT patients" not in response.data
 
 

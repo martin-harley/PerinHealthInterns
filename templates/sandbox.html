@@ -111,9 +111,18 @@
 
         <form class="sandbox-editor" method="post" action="{{ url_for('sandbox_run') }}">
           <input type="hidden" name="mode" value="builder">
-          <label>Drop blocks here
-            <textarea id="builder-sql" name="sql" rows="8" placeholder="SELECT first_name, last_name FROM patients;">{{ result.sql if result and active_mode == "builder" else "" }}</textarea>
-          </label>
+          <input type="hidden" id="builder-sql" name="sql" value="{{ result.sql if result and active_mode == 'builder' else '' }}">
+          <div class="builder-drop-header">
+            <h3>Build your query</h3>
+            <p>Drop pieces here, or click pieces on the left. Click a chip to remove it.</p>
+          </div>
+          <div id="builder-chip-board" class="builder-chip-board" role="group" aria-label="Built SQL pieces">
+            <p class="builder-empty">Drop SQL pieces here</p>
+          </div>
+          <div class="built-sql-preview" aria-live="polite">
+            <span>Built SQL</span>
+            <code id="builder-sql-preview">Start by adding SELECT</code>
+          </div>
           <div class="sandbox-actions">
             <button type="submit">Run built query</button>
             <button type="button" class="button-secondary" data-clear-target="builder-sql">Clear</button>

@@ -1,18 +1,60 @@
 const blocks = document.querySelectorAll(".sql-block");
-const builder = document.querySelector("#builder-sql");
+const builderInput = document.querySelector("#builder-sql");
+const chipBoard = document.querySelector("#builder-chip-board");
+const sqlPreview = document.querySelector("#builder-sql-preview");
 
-function appendSql(sql) {
-  if (!builder) return;
-  const start = builder.selectionStart ?? builder.value.length;
-  const end = builder.selectionEnd ?? builder.value.length;
-  const before = builder.value.slice(0, start);
+function appendWithSpacing(currentSql, fragment) {
   const needsSpace =
-    before.length > 0 &&
-    !/\s$/.test(before) &&
-    !/^[,;)=]/.test(sql) &&
-    sql !== ")";
-  builder.setRangeText(`${needsSpace ? " " : ""}${sql}`, start, end, "end");
-  builder.focus();
+    currentSql.length > 0 &&
+    !/\s$/.test(currentSql) &&
+    !/^[,;)=]/.test(fragment) &&
+    fragment !== ")";
+  return `${currentSql}${needsSpace ? " " : ""}${fragment}`;
+}
+
+function getChips() {
+  if (!chipBoard) return [];
+  return Array.from(chipBoard.querySelectorAll(".query-chip"));
+}
+
+function composeSql() {
+  return getChips().reduce(
+    (sql, chip) => appendWithSpacing(sql, chip.dataset.sql),
+    "",
+  );
+}
+
+function updateBuilder() {
+  if (!builderInput || !chipBoard || !sqlPreview) return;
+  const sql = composeSql();
+  builderInput.value = sql;
+  sqlPreview.textContent = sql || "Start by adding SELECT";
+  chipBoard.classList.toggle("is-empty", !sql);
+  if (sql) {
+    chipBoard.querySelector(".builder-empty")?.remove();
+  } else if (!chipBoard.querySelector(".builder-empty")) {
+    const empty = document.createElement("p");
+    empty.className = "builder-empty";
+    empty.textContent = "Drop SQL pieces here";
+    chipBoard.appendChild(empty);
+  }
+}
+
+function addChip(sql) {
+  if (!chipBoard || !sql) return;
+  chipBoard.querySelector(".builder-empty")?.remove();
+  const chip = document.createElement("button");
+  chip.type = "button";
+  chip.className = "query-chip";
+  chip.dataset.sql = sql;
+  chip.textContent = sql.trim() || sql;
+  chip.setAttribute("aria-label", `Remove ${chip.textContent}`);
+  chip.addEventListener("click", () => {
+    chip.remove();
+    updateBuilder();
+  });
+  chipBoard.appendChild(chip);
+  updateBuilder();
 }
 
 blocks.forEach((block) => {
@@ -21,18 +63,18 @@ blocks.forEach((block) => {
   });
 
   block.addEventListener("click", () => {
-    appendSql(block.dataset.sql);
+    addChip(block.dataset.sql);
   });
 });
 
-if (builder) {
-  builder.addEventListener("dragover", (event) => {
+if (chipBoard) {
+  chipBoard.addEventListener("dragover", (event) => {
     event.preventDefault();
   });
 
-  builder.addEventListener("drop", (event) => {
+  chipBoard.addEventListener("drop", (event) => {
     event.preventDefault();
-    appendSql(event.dataTransfer.getData("text/plain"));
+    addChip(event.dataTransfer.getData("text/plain"));
   });
 }
 
@@ -40,5 +82,15 @@ document.querySelectorAll("[data-clear-target]").forEach((button) => {
   button.addEventListener("click", () => {
     const target = document.getElementById(button.dataset.clearTarget);
     if (target) target.value = "";
+    getChips().forEach((chip) => chip.remove());
+    updateBuilder();
   });
 });
+
+document.querySelector(".sandbox-editor")?.addEventListener("submit", updateBuilder);
+
+if (builderInput?.value) {
+  addChip(builderInput.value);
+} else {
+  updateBuilder();
+}
