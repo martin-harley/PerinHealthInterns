@@ -29,17 +29,31 @@ def init_db():
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
+    on_vercel = os.environ.get("VERCEL") == "1"
+    database_path = (
+        os.path.join("/tmp", "appointment_tracker.sqlite")
+        if on_vercel
+        else os.path.join(app.instance_path, "appointment_tracker.sqlite")
+    )
     app.config.from_mapping(
         SECRET_KEY="dev",
-        DATABASE=os.path.join(app.instance_path, "appointment_tracker.sqlite"),
+        DATABASE=database_path,
     )
 
     if test_config is not None:
         app.config.update(test_config)
 
-    os.makedirs(app.instance_path, exist_ok=True)
+    if on_vercel:
+        needs_seed = not os.path.exists(app.config["DATABASE"])
+    else:
+        os.makedirs(app.instance_path, exist_ok=True)
+        needs_seed = False
 
     app.teardown_appcontext(close_db)
+
+    if needs_seed:
+        with app.app_context():
+            init_db()
 
     @app.cli.command("init-db")
     def init_db_command():
@@ -358,3 +372,6 @@ def create_app(test_config=None):
         return redirect(url_for("appointment_detail", appointment_id=appointment_id))
 
     return app
+
+
+app = create_app()
