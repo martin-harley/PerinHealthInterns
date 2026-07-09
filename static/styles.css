@@ -284,7 +284,8 @@ button,
 }
 
 #tab-builder:checked ~ .tab-list label[for="tab-builder"],
-#tab-typed:checked ~ .tab-list label[for="tab-typed"] {
+#tab-typed:checked ~ .tab-list label[for="tab-typed"],
+#tab-schema:checked ~ .tab-list label[for="tab-schema"] {
   background: #0f766e;
   border-color: #0f766e;
   color: white;
@@ -295,8 +296,147 @@ button,
 }
 
 #tab-builder:checked ~ .builder-panel,
-#tab-typed:checked ~ .typed-panel {
+#tab-typed:checked ~ .typed-panel,
+#tab-schema:checked ~ .schema-panel {
   display: block;
+}
+
+.schema-intro {
+  max-width: 680px;
+}
+
+.schema-intro h3 {
+  margin: 0 0 0.35rem;
+}
+
+.schema-intro p {
+  color: #52606d;
+  line-height: 1.45;
+  margin: 0 0 1rem;
+}
+
+.schema-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  margin-bottom: 1rem;
+}
+
+.schema-table-card,
+.relationship-map,
+.schema-practice {
+  background: #f8fafc;
+  border: 1px solid #d9e2ec;
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.schema-table-card h4,
+.relationship-map h4,
+.schema-practice h4 {
+  margin: 0 0 0.75rem;
+}
+
+.schema-table-card ul,
+.relationship-map ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.schema-table-card li,
+.relationship-map li {
+  border-top: 1px solid #d9e2ec;
+  padding: 0.55rem 0;
+}
+
+.schema-table-card li:first-child,
+.relationship-map li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.schema-table-card span {
+  color: #52606d;
+  display: block;
+  font-size: 0.82rem;
+  margin-top: 0.2rem;
+}
+
+.schema-table-card-wide {
+  border-color: #99f6e4;
+}
+
+.relationship-map {
+  margin-bottom: 1rem;
+}
+
+.relationship-map code {
+  color: #1e3a8a;
+  font-family: Consolas, "Courier New", monospace;
+}
+
+.schema-practice > div:first-child p {
+  color: #52606d;
+  margin: -0.35rem 0 1rem;
+}
+
+.relationship-practice-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(220px, 0.8fr) minmax(260px, 1.2fr);
+}
+
+.relationship-token-bank,
+.relationship-drop-list {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.relationship-token {
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 999px;
+  color: #e5e7eb;
+  cursor: grab;
+  font-family: Consolas, "Courier New", monospace;
+  padding: 0.55rem 0.75rem;
+  text-align: left;
+}
+
+.relationship-drop {
+  background: white;
+  border: 2px dashed #cbd5e1;
+  border-radius: 8px;
+  min-height: 54px;
+  padding: 0.75rem;
+}
+
+.relationship-drop strong,
+.relationship-drop span {
+  display: block;
+}
+
+.relationship-drop span {
+  color: #52606d;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+.relationship-drop.is-correct {
+  background: #ecfdf5;
+  border-color: #0f766e;
+}
+
+.relationship-drop.is-wrong {
+  background: #fef2f2;
+  border-color: #ef4444;
+}
+
+.relationship-feedback {
+  color: #334e68;
+  font-weight: 700;
+  margin: 0.85rem 0 0;
 }
 
 .sandbox-layout {
@@ -490,7 +630,8 @@ button,
 }
 
 @media (max-width: 760px) {
-  .sandbox-layout {
+  .sandbox-layout,
+  .relationship-practice-grid {
     grid-template-columns: 1fr;
   }
 }

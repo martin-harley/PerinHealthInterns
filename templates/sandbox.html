@@ -61,10 +61,12 @@
   <section class="sandbox-tabs">
     <input type="radio" name="sandbox-tab" id="tab-builder" {% if active_mode != "typed" %}checked{% endif %}>
     <input type="radio" name="sandbox-tab" id="tab-typed" {% if active_mode == "typed" %}checked{% endif %}>
+    <input type="radio" name="sandbox-tab" id="tab-schema">
 
     <div class="tab-list" aria-label="SQL sandbox modes">
       <label for="tab-builder">Drag & Build</label>
       <label for="tab-typed">Type SQL</label>
+      <label for="tab-schema">Schema</label>
     </div>
 
     <div class="tab-panel builder-panel">
@@ -168,6 +170,99 @@
           <button type="submit">Run typed query</button>
         </div>
       </form>
+    </div>
+
+    <div class="tab-panel schema-panel">
+      <section class="schema-intro">
+        <h3>How tables connect</h3>
+        <p>Primary keys identify one row. Foreign keys store another table's primary key so related rows can be joined.</p>
+      </section>
+
+      <div class="schema-grid" aria-label="Training database schema">
+        <article class="schema-table-card">
+          <h4>patients</h4>
+          <ul>
+            <li><strong>id</strong> <span>primary key</span></li>
+            <li>first_name</li>
+            <li>last_name</li>
+            <li>date_of_birth</li>
+            <li>phone</li>
+          </ul>
+        </article>
+
+        <article class="schema-table-card">
+          <h4>doctors</h4>
+          <ul>
+            <li><strong>id</strong> <span>primary key</span></li>
+            <li>first_name</li>
+            <li>last_name</li>
+            <li>specialty</li>
+          </ul>
+        </article>
+
+        <article class="schema-table-card schema-table-card-wide">
+          <h4>appointments</h4>
+          <ul>
+            <li><strong>id</strong> <span>primary key</span></li>
+            <li><strong>patient_id</strong> <span>foreign key to patients.id</span></li>
+            <li><strong>doctor_id</strong> <span>foreign key to doctors.id</span></li>
+            <li>appointment_date</li>
+            <li>appointment_time</li>
+            <li>reason</li>
+            <li>status</li>
+          </ul>
+        </article>
+
+        <article class="schema-table-card">
+          <h4>appointment_notes</h4>
+          <ul>
+            <li><strong>id</strong> <span>primary key</span></li>
+            <li><strong>appointment_id</strong> <span>foreign key to appointments.id</span></li>
+            <li>note_text</li>
+            <li>created_at</li>
+          </ul>
+        </article>
+      </div>
+
+      <section class="relationship-map" aria-label="Schema relationships">
+        <h4>Relationship map</h4>
+        <ul>
+          <li><code>appointments.patient_id</code> connects each appointment to one <code>patients.id</code>.</li>
+          <li><code>appointments.doctor_id</code> connects each appointment to one <code>doctors.id</code>.</li>
+          <li><code>appointment_notes.appointment_id</code> connects each note to one <code>appointments.id</code>.</li>
+        </ul>
+      </section>
+
+      <section class="schema-practice">
+        <div>
+          <h4>Link the tables</h4>
+          <p>Drag each foreign key to the table it connects to.</p>
+        </div>
+
+        <div class="relationship-practice-grid">
+          <div class="relationship-token-bank" aria-label="Foreign key chips">
+            <button class="relationship-token" type="button" draggable="true" data-target="patients">appointments.patient_id</button>
+            <button class="relationship-token" type="button" draggable="true" data-target="doctors">appointments.doctor_id</button>
+            <button class="relationship-token" type="button" draggable="true" data-target="appointments">appointment_notes.appointment_id</button>
+          </div>
+
+          <div class="relationship-drop-list" aria-label="Linked table targets">
+            <div class="relationship-drop" data-accept="patients">
+              <strong>patients.id</strong>
+              <span>Drop the key that points to a patient.</span>
+            </div>
+            <div class="relationship-drop" data-accept="doctors">
+              <strong>doctors.id</strong>
+              <span>Drop the key that points to a doctor.</span>
+            </div>
+            <div class="relationship-drop" data-accept="appointments">
+              <strong>appointments.id</strong>
+              <span>Drop the key that points to an appointment.</span>
+            </div>
+          </div>
+        </div>
+        <p id="relationship-feedback" class="relationship-feedback" aria-live="polite">Match all three links.</p>
+      </section>
     </div>
   </section>
 
