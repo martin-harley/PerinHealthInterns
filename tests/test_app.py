@@ -232,6 +232,13 @@ def test_sandbox_page_has_builder_and_typed_tabs(client_with_db):
     assert b"Drag builder" in response.data
     assert b"Type SQL" in response.data
     assert b"draggable=\"true\"" in response.data
+    assert b"SQL actions" in response.data
+    assert b"Tables" in response.data
+    assert b"Columns" in response.data
+    assert b'data-sql="SELECT "' in response.data
+    assert b'data-sql="patients"' in response.data
+    assert b'data-sql="first_name"' in response.data
+    assert b"SELECT patients" not in response.data
 
 
 def test_sandbox_typed_select_returns_rows(client_with_db):

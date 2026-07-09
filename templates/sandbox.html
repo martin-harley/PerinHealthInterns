@@ -44,17 +44,75 @@
       <div class="sandbox-layout">
         <section class="block-palette" aria-label="Draggable SQL blocks">
           <h3>Drag SQL pieces</h3>
-          <button class="sql-block" type="button" draggable="true" data-sql="SELECT id, first_name, last_name FROM patients;">SELECT patients</button>
-          <button class="sql-block" type="button" draggable="true" data-sql="SELECT appointments.id, patients.first_name || ' ' || patients.last_name AS patient_name, doctors.first_name || ' ' || doctors.last_name AS doctor_name, appointments.status FROM appointments JOIN patients ON appointments.patient_id = patients.id JOIN doctors ON appointments.doctor_id = doctors.id;">JOIN appointments</button>
-          <button class="sql-block" type="button" draggable="true" data-sql="INSERT INTO patients (first_name, last_name, date_of_birth, phone) VALUES ('Riley', 'Sandbox', '1999-09-09', '555-0200');">INSERT patient</button>
-          <button class="sql-block" type="button" draggable="true" data-sql="UPDATE appointments SET status = 'completed' WHERE id = 1;">UPDATE appointment</button>
-          <button class="sql-block" type="button" draggable="true" data-sql="DELETE FROM appointment_notes WHERE id = 1;">DELETE note</button>
+          <p class="builder-hint">Build in small steps: command, columns, table, conditions, then punctuation.</p>
+
+          <div class="sql-block-group">
+            <h4>SQL actions</h4>
+            <div class="sql-block-grid">
+              <button class="sql-block sql-block-command" type="button" draggable="true" data-sql="SELECT ">SELECT</button>
+              <button class="sql-block sql-block-command" type="button" draggable="true" data-sql="FROM ">FROM</button>
+              <button class="sql-block sql-block-command" type="button" draggable="true" data-sql="JOIN ">JOIN</button>
+              <button class="sql-block sql-block-command" type="button" draggable="true" data-sql="ON ">ON</button>
+              <button class="sql-block sql-block-command" type="button" draggable="true" data-sql="WHERE ">WHERE</button>
+              <button class="sql-block sql-block-command" type="button" draggable="true" data-sql="INSERT INTO ">INSERT INTO</button>
+              <button class="sql-block sql-block-command" type="button" draggable="true" data-sql="UPDATE ">UPDATE</button>
+              <button class="sql-block sql-block-command" type="button" draggable="true" data-sql="DELETE FROM ">DELETE FROM</button>
+              <button class="sql-block sql-block-command" type="button" draggable="true" data-sql="SET ">SET</button>
+              <button class="sql-block sql-block-command" type="button" draggable="true" data-sql="VALUES ">VALUES</button>
+              <button class="sql-block sql-block-command" type="button" draggable="true" data-sql="ORDER BY ">ORDER BY</button>
+            </div>
+          </div>
+
+          <div class="sql-block-group">
+            <h4>Tables</h4>
+            <div class="sql-block-grid">
+              <button class="sql-block sql-block-table" type="button" draggable="true" data-sql="patients">patients</button>
+              <button class="sql-block sql-block-table" type="button" draggable="true" data-sql="doctors">doctors</button>
+              <button class="sql-block sql-block-table" type="button" draggable="true" data-sql="appointments">appointments</button>
+              <button class="sql-block sql-block-table" type="button" draggable="true" data-sql="appointment_notes">appointment_notes</button>
+            </div>
+          </div>
+
+          <div class="sql-block-group">
+            <h4>Columns</h4>
+            <div class="sql-block-grid">
+              <button class="sql-block sql-block-column" type="button" draggable="true" data-sql="id">id</button>
+              <button class="sql-block sql-block-column" type="button" draggable="true" data-sql="first_name">first_name</button>
+              <button class="sql-block sql-block-column" type="button" draggable="true" data-sql="last_name">last_name</button>
+              <button class="sql-block sql-block-column" type="button" draggable="true" data-sql="date_of_birth">date_of_birth</button>
+              <button class="sql-block sql-block-column" type="button" draggable="true" data-sql="phone">phone</button>
+              <button class="sql-block sql-block-column" type="button" draggable="true" data-sql="specialty">specialty</button>
+              <button class="sql-block sql-block-column" type="button" draggable="true" data-sql="patient_id">patient_id</button>
+              <button class="sql-block sql-block-column" type="button" draggable="true" data-sql="doctor_id">doctor_id</button>
+              <button class="sql-block sql-block-column" type="button" draggable="true" data-sql="appointment_date">appointment_date</button>
+              <button class="sql-block sql-block-column" type="button" draggable="true" data-sql="appointment_time">appointment_time</button>
+              <button class="sql-block sql-block-column" type="button" draggable="true" data-sql="reason">reason</button>
+              <button class="sql-block sql-block-column" type="button" draggable="true" data-sql="status">status</button>
+              <button class="sql-block sql-block-column" type="button" draggable="true" data-sql="note_text">note_text</button>
+              <button class="sql-block sql-block-column" type="button" draggable="true" data-sql="created_at">created_at</button>
+            </div>
+          </div>
+
+          <div class="sql-block-group">
+            <h4>Glue and values</h4>
+            <div class="sql-block-grid">
+              <button class="sql-block sql-block-glue" type="button" draggable="true" data-sql="*">*</button>
+              <button class="sql-block sql-block-glue" type="button" draggable="true" data-sql=", ">,</button>
+              <button class="sql-block sql-block-glue" type="button" draggable="true" data-sql=" = ">=</button>
+              <button class="sql-block sql-block-glue" type="button" draggable="true" data-sql="(">(</button>
+              <button class="sql-block sql-block-glue" type="button" draggable="true" data-sql=")">)</button>
+              <button class="sql-block sql-block-glue" type="button" draggable="true" data-sql=";">;</button>
+              <button class="sql-block sql-block-value" type="button" draggable="true" data-sql="'scheduled'">'scheduled'</button>
+              <button class="sql-block sql-block-value" type="button" draggable="true" data-sql="'completed'">'completed'</button>
+              <button class="sql-block sql-block-value" type="button" draggable="true" data-sql="1">1</button>
+            </div>
+          </div>
         </section>
 
         <form class="sandbox-editor" method="post" action="{{ url_for('sandbox_run') }}">
           <input type="hidden" name="mode" value="builder">
           <label>Drop blocks here
-            <textarea id="builder-sql" name="sql" rows="8" placeholder="Drag a SQL block here, then edit it before running.">{{ result.sql if result and active_mode == "builder" else "" }}</textarea>
+            <textarea id="builder-sql" name="sql" rows="8" placeholder="SELECT first_name, last_name FROM patients;">{{ result.sql if result and active_mode == "builder" else "" }}</textarea>
           </label>
           <div class="sandbox-actions">
             <button type="submit">Run built query</button>

@@ -3,8 +3,15 @@ const builder = document.querySelector("#builder-sql");
 
 function appendSql(sql) {
   if (!builder) return;
-  const separator = builder.value.trim() ? "\n" : "";
-  builder.value = `${builder.value}${separator}${sql}`;
+  const start = builder.selectionStart ?? builder.value.length;
+  const end = builder.selectionEnd ?? builder.value.length;
+  const before = builder.value.slice(0, start);
+  const needsSpace =
+    before.length > 0 &&
+    !/\s$/.test(before) &&
+    !/^[,;)=]/.test(sql) &&
+    sql !== ")";
+  builder.setRangeText(`${needsSpace ? " " : ""}${sql}`, start, end, "end");
   builder.focus();
 }
 
