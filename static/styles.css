@@ -311,17 +311,40 @@ button,
   border: 1px solid #d9e2ec;
   border-radius: 8px;
   display: grid;
-  gap: 1rem 0;
-  grid-template-columns: minmax(170px, 1fr) 150px minmax(220px, 1.15fr) 150px minmax(170px, 1fr);
-  grid-template-rows: auto 96px auto;
+  gap: 4rem 5rem;
+  grid-template-columns: minmax(170px, 1fr) minmax(220px, 1.15fr) minmax(170px, 1fr);
+  grid-template-rows: auto auto;
   overflow: visible;
-  padding: 1.5rem;
+  padding: 2rem 2.5rem;
+  position: relative;
 }
 
-.schema-arrow {
-  color: #0f766e;
-  opacity: 0.55;
-  transition: opacity 150ms ease-out;
+.schema-canvas {
+  height: 100%;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 3;
+}
+
+.schema-line {
+  fill: none;
+  stroke-width: 2.5;
+}
+
+.schema-line-preview {
+  stroke: #64748b;
+  stroke-dasharray: 6 5;
+}
+
+.schema-line-correct {
+  stroke: #16a34a;
+}
+
+.schema-line-incorrect {
+  stroke: #dc2626;
 }
 
 .schema-node {
@@ -334,6 +357,7 @@ button,
   position: relative;
   text-align: left;
   width: auto;
+  z-index: 2;
 }
 
 .schema-node:hover,
@@ -372,6 +396,7 @@ button,
   background: #f8fafc;
   color: #0f766e;
   font-weight: 700;
+  padding-right: 0.6rem;
 }
 
 .schema-port {
@@ -381,6 +406,7 @@ button,
   height: 0.72rem;
   position: absolute;
   width: 0.72rem;
+  z-index: 4;
 }
 
 .schema-port-in {
@@ -398,8 +424,15 @@ button,
 }
 
 .schema-field-fk .schema-port {
-  background: #0f766e;
+  background: white;
   border-color: #0f766e;
+  cursor: grab;
+}
+
+.schema-field-fk .schema-port:hover,
+.schema-field-fk .schema-port:active {
+  background: #0f766e;
+  cursor: grabbing;
 }
 
 .schema-node-patients {
@@ -408,111 +441,18 @@ button,
 }
 
 .schema-node-doctors {
-  grid-column: 5;
+  grid-column: 3;
   grid-row: 1;
 }
 
 .schema-node-appointments {
-  grid-column: 3;
-  grid-row: 1;
-}
-
-.schema-node-notes {
-  grid-column: 3;
-  grid-row: 3;
-}
-
-.schema-connector {
-  align-self: center;
-  display: grid;
-  gap: 0.35rem;
-}
-
-.schema-connector-horizontal {
-  grid-template-rows: auto 0.8rem auto;
-  padding: 0 0.7rem;
-}
-
-.schema-connector-left {
   grid-column: 2;
   grid-row: 1;
 }
 
-.schema-connector-right {
-  grid-column: 4;
-  grid-row: 1;
-}
-
-.schema-connector-vertical {
-  align-self: stretch;
-  grid-column: 3;
+.schema-node-notes {
+  grid-column: 2;
   grid-row: 2;
-  grid-template-rows: auto 1fr auto;
-  justify-self: center;
-  min-height: 96px;
-  width: 180px;
-}
-
-.schema-connector-label {
-  color: #334e68;
-  display: block;
-  font-family: Consolas, "Courier New", monospace;
-  font-size: 0.66rem;
-  line-height: 1.25;
-  overflow-wrap: anywhere;
-  text-align: center;
-}
-
-.schema-connector-line {
-  background: currentColor;
-  border-radius: 999px;
-  display: block;
-  position: relative;
-}
-
-.schema-connector-horizontal .schema-connector-line {
-  height: 0.2rem;
-}
-
-.schema-connector-left .schema-connector-line::before,
-.schema-connector-right .schema-connector-line::after {
-  border-bottom: 0.42rem solid transparent;
-  border-top: 0.42rem solid transparent;
-  content: "";
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.schema-connector-left .schema-connector-line::before {
-  border-right: 0.7rem solid currentColor;
-  left: -0.1rem;
-}
-
-.schema-connector-right .schema-connector-line::after {
-  border-left: 0.7rem solid currentColor;
-  right: -0.1rem;
-}
-
-.schema-connector-vertical .schema-connector-line {
-  height: 100%;
-  justify-self: center;
-  width: 0.22rem;
-}
-
-.schema-connector-up .schema-connector-line::before {
-  border-bottom: 0.7rem solid currentColor;
-  border-left: 0.42rem solid transparent;
-  border-right: 0.42rem solid transparent;
-  content: "";
-  left: 50%;
-  position: absolute;
-  top: -0.1rem;
-  transform: translateX(-50%);
-}
-
-.schema-arrow.is-active {
-  opacity: 1;
 }
 
 .schema-details {
@@ -531,21 +471,23 @@ button,
   line-height: 1.45;
 }
 
-.schema-details pre {
-  background: #020617;
-  border: 1px solid #374151;
-  border-radius: 6px;
-  overflow-x: auto;
-  padding: 0.85rem;
-  white-space: pre-wrap;
+.schema-progress {
+  color: #9ca3af;
+  font-size: 0.85rem;
+  margin: 0 0 0.85rem;
 }
 
-.schema-details code {
-  color: #bfdbfe;
-  display: block;
-  font-family: Consolas, "Courier New", monospace;
-  line-height: 1.5;
-  overflow-wrap: anywhere;
+.schema-reset {
+  background: transparent;
+  border: 1px solid #4b5563;
+  border-radius: 6px;
+  color: #e5e7eb;
+  cursor: pointer;
+  padding: 0.45rem 0.85rem;
+}
+
+.schema-reset:hover {
+  border-color: #9ca3af;
 }
 
 .schema-intro {
@@ -824,10 +766,7 @@ button,
   .schema-node-patients,
   .schema-node-doctors,
   .schema-node-appointments,
-  .schema-node-notes,
-  .schema-connector-left,
-  .schema-connector-right,
-  .schema-connector-vertical {
+  .schema-node-notes {
     grid-column: 1;
     grid-row: auto;
   }

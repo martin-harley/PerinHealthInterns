@@ -7,31 +7,28 @@
     <p class="eyebrow">Relational database map</p>
     <h2>Interactive Schema Map</h2>
     <p>
-      See how fictional patients, doctors, appointments, and notes connect.
-      Select a table to highlight its relationships.
+      Practice connecting foreign keys. Drag from a foreign key field
+      (right-hand dot) to the primary key it references (left-hand dot).
+      Correct links turn green; incorrect links flash red.
     </p>
   </section>
 
   <section class="schema-map-shell">
     <div class="schema-map" aria-label="Interactive schema map">
+      <svg class="schema-canvas" aria-hidden="true"></svg>
+
       <button class="schema-node schema-node-patients" type="button" data-table="patients">
         <strong>patients</strong>
-        <span class="schema-field schema-field-pk" data-field="patients.id"><i class="schema-port schema-port-in"></i>id</span>
+        <span class="schema-field schema-field-pk" data-pk="patients.id"><i class="schema-port schema-port-in" data-drop="patients.id"></i>id</span>
         <span class="schema-field">first_name</span>
         <span class="schema-field">last_name</span>
         <span class="schema-field">date_of_birth</span>
         <span class="schema-field">phone</span>
       </button>
 
-      <div class="schema-arrow schema-connector schema-connector-horizontal schema-connector-left" data-from="appointments.patient_id" data-to="patients.id" data-connects="patients appointments">
-        <span class="schema-connector-label">appointments.patient_id</span>
-        <span class="schema-connector-line"></span>
-        <span class="schema-connector-label">patients.id</span>
-      </div>
-
       <button class="schema-node schema-node-doctors" type="button" data-table="doctors">
         <strong>doctors</strong>
-        <span class="schema-field schema-field-pk" data-field="doctors.id"><i class="schema-port schema-port-in"></i>id</span>
+        <span class="schema-field schema-field-pk" data-pk="doctors.id"><i class="schema-port schema-port-in" data-drop="doctors.id"></i>id</span>
         <span class="schema-field">first_name</span>
         <span class="schema-field">last_name</span>
         <span class="schema-field">specialty</span>
@@ -39,52 +36,40 @@
 
       <button class="schema-node schema-node-appointments is-active" type="button" data-table="appointments">
         <strong>appointments</strong>
-        <span class="schema-field schema-field-pk" data-field="appointments.id"><i class="schema-port schema-port-in"></i>id</span>
-        <span class="schema-field schema-field-fk" data-field="appointments.patient_id"><i class="schema-port schema-port-out schema-port-left"></i>patient_id <small>patients.id</small></span>
-        <span class="schema-field schema-field-fk" data-field="appointments.doctor_id"><i class="schema-port schema-port-out schema-port-right"></i>doctor_id <small>doctors.id</small></span>
+        <span class="schema-field schema-field-pk" data-pk="appointments.id"><i class="schema-port schema-port-in" data-drop="appointments.id"></i>id</span>
+        <span class="schema-field schema-field-fk" data-fk="appointments.patient_id" data-answer="patients.id">patient_id <small>?</small><i class="schema-port schema-port-out schema-port-left" data-drag="appointments.patient_id"></i></span>
+        <span class="schema-field schema-field-fk" data-fk="appointments.doctor_id" data-answer="doctors.id">doctor_id <small>?</small><i class="schema-port schema-port-out schema-port-right" data-drag="appointments.doctor_id"></i></span>
         <span class="schema-field">appointment_date</span>
         <span class="schema-field">appointment_time</span>
         <span class="schema-field">reason</span>
         <span class="schema-field">status</span>
       </button>
 
-      <div class="schema-arrow schema-connector schema-connector-horizontal schema-connector-right" data-from="appointments.doctor_id" data-to="doctors.id" data-connects="doctors appointments">
-        <span class="schema-connector-label">appointments.doctor_id</span>
-        <span class="schema-connector-line"></span>
-        <span class="schema-connector-label">doctors.id</span>
-      </div>
-
-      <div class="schema-arrow schema-connector schema-connector-vertical schema-connector-up" data-from="appointment_notes.appointment_id" data-to="appointments.id" data-connects="appointments appointment_notes">
-        <span class="schema-connector-label">appointment_notes.appointment_id</span>
-        <span class="schema-connector-line"></span>
-        <span class="schema-connector-label">appointments.id</span>
-      </div>
-
       <button class="schema-node schema-node-notes" type="button" data-table="appointment_notes">
         <strong>appointment_notes</strong>
-        <span class="schema-field schema-field-pk" data-field="appointment_notes.id"><i class="schema-port schema-port-in"></i>id</span>
-        <span class="schema-field schema-field-fk" data-field="appointment_notes.appointment_id"><i class="schema-port schema-port-out schema-port-left"></i>appointment_id <small>appointments.id</small></span>
+        <span class="schema-field schema-field-pk" data-pk="appointment_notes.id"><i class="schema-port schema-port-in" data-drop="appointment_notes.id"></i>id</span>
+        <span class="schema-field schema-field-fk" data-fk="appointment_notes.appointment_id" data-answer="appointments.id">appointment_id <small>?</small><i class="schema-port schema-port-out schema-port-left" data-drag="appointment_notes.appointment_id"></i></span>
         <span class="schema-field">note_text</span>
         <span class="schema-field">created_at</span>
       </button>
     </div>
 
     <aside class="schema-details" aria-live="polite">
-      <h3 id="schema-detail-title">appointments</h3>
+      <h3 id="schema-detail-title">Link the tables</h3>
       <p id="schema-detail-copy">
-        Appointments sit in the middle. Each appointment belongs to one patient and one doctor.
+        Drag a line from each foreign key (green outlined dot) to the primary key it references.
       </p>
-      <pre><code id="schema-detail-sql">JOIN patients ON appointments.patient_id = patients.id
-JOIN doctors ON appointments.doctor_id = doctors.id</code></pre>
+      <p class="schema-progress" id="schema-progress">0 of 3 connected</p>
+      <button class="schema-reset" type="button" id="schema-reset">Reset practice</button>
     </aside>
   </section>
 
   <section class="relationship-map" aria-label="Schema relationships">
-    <h3>Relationships</h3>
+    <h3>Foreign keys to connect</h3>
     <ul>
-      <li><code>appointments.patient_id</code> connects appointments to <code>patients.id</code>.</li>
-      <li><code>appointments.doctor_id</code> connects appointments to <code>doctors.id</code>.</li>
-      <li><code>appointment_notes.appointment_id</code> connects notes to <code>appointments.id</code>.</li>
+      <li><code>appointments.patient_id</code> should connect to <code>patients.id</code>.</li>
+      <li><code>appointments.doctor_id</code> should connect to <code>doctors.id</code>.</li>
+      <li><code>appointment_notes.appointment_id</code> should connect to <code>appointments.id</code>.</li>
     </ul>
   </section>
 

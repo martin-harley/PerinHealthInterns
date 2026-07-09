@@ -260,16 +260,17 @@ def test_schema_page_shows_interactive_schema_map(client_with_db):
     assert b"appointments.patient_id" in response.data
     assert b"appointments.doctor_id" in response.data
     assert b"appointment_notes.appointment_id" in response.data
-    assert b"class=\"schema-arrow" in response.data
     assert b"data-table=\"appointments\"" in response.data
     assert b"schema-field-fk" in response.data
     assert b"schema-port schema-port-out" in response.data
-    assert b"data-field=\"appointments.patient_id\"" in response.data
-    assert b"data-from=\"appointments.patient_id\"" in response.data
-    assert b"data-to=\"patients.id\"" in response.data
-    assert b"schema-connector-label" in response.data
-    assert b"data-connects=\"patients appointments\"" in response.data
-    assert b"Link the tables" not in response.data
+    assert b"data-fk=\"appointments.patient_id\"" in response.data
+    assert b"data-answer=\"patients.id\"" in response.data
+    assert b"data-drag=\"appointments.patient_id\"" in response.data
+    assert b"data-drop=\"patients.id\"" in response.data
+    assert b"class=\"schema-canvas\"" in response.data
+    assert b"id=\"schema-progress\"" in response.data
+    assert b"id=\"schema-reset\"" in response.data
+    assert b"Link the tables" in response.data
 
 
 def test_sandbox_typed_select_returns_rows(client_with_db):
