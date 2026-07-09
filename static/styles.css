@@ -485,6 +485,7 @@ button,
 }
 
 .query-result {
+  margin-bottom: 1rem;
   overflow-x: auto;
 }
 

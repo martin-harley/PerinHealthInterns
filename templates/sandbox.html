@@ -31,6 +31,33 @@
     ]
   ) }}
 
+  {% if result %}
+    <section class="query-result">
+      <h3>Result</h3>
+      {% if result.error %}
+        <p class="error-panel">{{ result.error }}</p>
+      {% else %}
+        <p class="success-panel">{{ result.message }}</p>
+        {% if result.columns %}
+          <table>
+            <tr>
+              {% for column in result.columns %}
+                <th>{{ column }}</th>
+              {% endfor %}
+            </tr>
+            {% for row in result.rows %}
+              <tr>
+                {% for column in result.columns %}
+                  <td>{{ row[column] }}</td>
+                {% endfor %}
+              </tr>
+            {% endfor %}
+          </table>
+        {% endif %}
+      {% endif %}
+    </section>
+  {% endif %}
+
   <section class="sandbox-tabs">
     <input type="radio" name="sandbox-tab" id="tab-builder" {% if active_mode != "typed" %}checked{% endif %}>
     <input type="radio" name="sandbox-tab" id="tab-typed" {% if active_mode == "typed" %}checked{% endif %}>
@@ -147,33 +174,6 @@
   <form class="reset-form" method="post" action="{{ url_for('sandbox_reset') }}" onsubmit="return confirm('Reset the database back to the seed training data?');">
     <button type="submit">Reset training database</button>
   </form>
-
-  {% if result %}
-    <section class="query-result">
-      <h3>Result</h3>
-      {% if result.error %}
-        <p class="error-panel">{{ result.error }}</p>
-      {% else %}
-        <p class="success-panel">{{ result.message }}</p>
-        {% if result.columns %}
-          <table>
-            <tr>
-              {% for column in result.columns %}
-                <th>{{ column }}</th>
-              {% endfor %}
-            </tr>
-            {% for row in result.rows %}
-              <tr>
-                {% for column in result.columns %}
-                  <td>{{ row[column] }}</td>
-                {% endfor %}
-              </tr>
-            {% endfor %}
-          </table>
-        {% endif %}
-      {% endif %}
-    </section>
-  {% endif %}
 
   <script src="{{ url_for('static', filename='sandbox.js') }}"></script>
 {% endblock %}

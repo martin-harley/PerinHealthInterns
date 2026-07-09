@@ -257,6 +257,18 @@ def test_sandbox_typed_select_returns_rows(client_with_db):
     assert b"Morgan" in response.data
 
 
+def test_sandbox_result_appears_before_builder(client_with_db):
+    response = client_with_db.post(
+        "/sandbox/run",
+        data={"sql": "SELECT first_name, last_name FROM patients ORDER BY id;"},
+    )
+
+    tips_index = response.data.index(b"Show SQL and tips")
+    result_index = response.data.index(b"Result")
+    builder_index = response.data.index(b"Drag & Build")
+    assert tips_index < result_index < builder_index
+
+
 def test_sandbox_builder_insert_executes_against_app_database(client_with_db, app_with_db):
     response = client_with_db.post(
         "/sandbox/run",
