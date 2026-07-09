@@ -24,11 +24,20 @@ function composeSql() {
   );
 }
 
+function formatSqlForPreview(sql) {
+  if (!sql.trim()) return "Start by adding SELECT";
+  const normalizedSql = sql.replace(/\s+/g, " ").trim();
+  return normalizedSql.replace(
+    /\s+(FROM|JOIN|ON|WHERE|SET|VALUES|ORDER BY)\b/g,
+    "\n$1",
+  );
+}
+
 function updateBuilder() {
   if (!builderInput || !chipBoard || !sqlPreview) return;
   const sql = composeSql();
   builderInput.value = sql;
-  sqlPreview.textContent = sql || "Start by adding SELECT";
+  sqlPreview.textContent = formatSqlForPreview(sql);
   chipBoard.classList.toggle("is-empty", !sql);
   if (sql) {
     chipBoard.querySelector(".builder-empty")?.remove();

@@ -384,8 +384,14 @@ button,
   text-transform: uppercase;
 }
 
+.built-sql-code {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
 .built-sql-preview code {
   color: #1e3a8a;
+  display: block;
   font-family: Consolas, "Courier New", monospace;
   font-size: 0.92rem;
   line-height: 1.5;

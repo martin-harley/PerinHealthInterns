@@ -36,7 +36,7 @@
     <input type="radio" name="sandbox-tab" id="tab-typed" {% if active_mode == "typed" %}checked{% endif %}>
 
     <div class="tab-list" aria-label="SQL sandbox modes">
-      <label for="tab-builder">Drag builder</label>
+      <label for="tab-builder">Drag & Build</label>
       <label for="tab-typed">Type SQL</label>
     </div>
 
@@ -121,7 +121,7 @@
           </div>
           <div class="built-sql-preview" aria-live="polite">
             <span>Built SQL</span>
-            <code id="builder-sql-preview">Start by adding SELECT</code>
+            <pre class="built-sql-code"><code id="builder-sql-preview">Start by adding SELECT</code></pre>
           </div>
           <div class="sandbox-actions">
             <button type="submit">Run built query</button>
